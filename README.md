@@ -4,6 +4,8 @@ Todas as questões objetivas das provas regulares do Enem de 2015 a 2025 (cadern
 
 Abra o site: https://annepriscilla.github.io/banco-enem/
 
+O site pede aos buscadores para não aparecer em pesquisas. Ele é aberto apenas por quem tem o link.
+
 ## O que tem
 
 - 2.025 questões de Linguagens, Matemática, Biologia, Física, Química, História, Geografia e Filosofia e Sociologia.
