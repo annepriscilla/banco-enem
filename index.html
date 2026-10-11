@@ -136,6 +136,13 @@ select{font-family:var(--body);font-size:.88rem;padding:4px 6px;border:1px solid
 .fim .acts{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
 .sum .mine{font-size:.85rem;color:var(--muted)}
 .sum .mine b{color:var(--fg);font-weight:600}
+.pv{display:grid;gap:10px;margin-top:1.2rem}
+.timer{font-family:var(--mono)}
+.ftoggle{display:none;justify-self:start;font-family:var(--display);font-size:.85rem;border:1px solid var(--line);background:var(--paper);color:var(--fg);border-radius:999px;padding:4px 12px;cursor:pointer}
+.ftoggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.fbody{display:grid;gap:8px}
+@media (max-width:640px){.ftoggle{display:inline-block}.fbody{display:none}.bar2.open .fbody{display:grid}}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media (prefers-reduced-motion:no-preference){.alt{transition:border-color .15s,background .15s}}
 </style>
 </head>
@@ -165,8 +172,28 @@ select{font-family:var(--body);font-size:.88rem;padding:4px 6px;border:1px solid
     <div class="sumgrid" id="sumgrid"></div>
   </section>
 
+  <section id="prova" hidden>
+    <div class="box pv">
+      <h2>Fazer a prova na ordem</h2>
+      <p class="note" style="margin:0">Escolha o ano e o dia. As questões aparecem na ordem do caderno azul, da primeira à última, como no dia da prova. O assunto e a dificuldade só aparecem depois que você responde.</p>
+      <div class="row">
+        <label class="lbl" for="pv-ano">Ano</label><select id="pv-ano"></select>
+        <label class="lbl" for="pv-dia">Dia</label><select id="pv-dia"></select>
+        <label class="lbl" for="pv-lang">Língua</label><select id="pv-lang"><option value="ing">Inglês</option><option value="esp">Espanhol</option></select>
+      </div>
+      <p class="note" style="margin:0" id="pv-info"></p>
+    </div>
+    <div class="bar2">
+      <div class="prog">
+        <div class="ptext"><span id="pv-ptext"></span><span id="pv-timer" class="timer"></span><button class="endbtn" id="pv-end" type="button">Encerrar e ver resultado</button></div>
+        <div class="pbar" id="pv-pbar" role="img" aria-label="Progresso"></div>
+      </div>
+    </div>
+    <div class="list" id="pv-list"></div>
+    <button class="more" id="pv-more" type="button" hidden>Mostrar mais</button>
+  </section>
+
   <section id="materia" hidden>
-    <div class="stats" id="stats" style="margin-top:1.2rem"></div>
     <section class="rank" aria-label="Assuntos">
       <div class="rhead">
         <h2 id="rtitle">Assuntos</h2>
@@ -175,42 +202,54 @@ select{font-family:var(--body);font-size:.88rem;padding:4px 6px;border:1px solid
           <button type="button" data-r="f">Mais fáceis</button>
         </div>
       </div>
+      <p class="note" id="rnote" style="margin:.2rem 0 0"></p>
       <ol id="rank"></ol>
       <p class="note">Clique em um assunto para ver só as questões dele. "Fáceis" é o número de questões abaixo de 600 pontos. "Nível" é a dificuldade típica (mediana) do assunto.</p>
     </section>
 
-    <div class="bar2">
+    <div class="bar2" id="bar2">
       <div class="prog">
         <div class="ptext"><span id="ptext"></span><button class="endbtn" id="end" type="button">Encerrar e ver resultado</button></div>
         <div class="pbar" id="pbar" role="img" aria-label="Progresso"></div>
       </div>
-      <div class="row" id="years"><span class="lbl">Ano</span></div>
-      <div class="row">
-        <span class="lbl">Filtros</span>
-        <select id="topic" aria-label="Assunto"></select>
-        <select id="level" aria-label="Dificuldade">
-          <option value="">Toda dificuldade</option>
-          <option value="f">Só fáceis</option>
-          <option value="m">Só médias</option>
-          <option value="d">Só difíceis</option>
-        </select>
-        <select id="mode" aria-label="Mostrar">
-          <option value="all">Todas</option>
-          <option value="todo">Não respondidas</option>
-          <option value="wrong">Que errei</option>
-        </select>
-        <select id="order" aria-label="Ordem">
-          <option value="easy">Mais fáceis primeiro</option>
-          <option value="exam">Ordem da prova</option>
-          <option value="rand">Embaralhadas</option>
-        </select>
-        <button class="link" id="reset" type="button">Zerar respostas</button>
+      <button class="ftoggle" id="ftoggle" type="button" aria-expanded="false" aria-controls="fbody">Filtros</button>
+      <div class="fbody" id="fbody">
+        <div class="row" id="years"><span class="lbl">Ano</span></div>
+        <div class="row">
+          <span class="lbl">Filtros</span>
+          <select id="topic" aria-label="Assunto"></select>
+          <select id="level" aria-label="Dificuldade">
+            <option value="">Toda dificuldade</option>
+            <option value="f">Só fáceis</option>
+            <option value="m">Só médias</option>
+            <option value="d">Só difíceis</option>
+          </select>
+          <select id="mode" aria-label="Mostrar">
+            <option value="all">Todas</option>
+            <option value="todo">Não respondidas</option>
+            <option value="wrong">Que errei</option>
+          </select>
+          <select id="lang" aria-label="Língua estrangeira" hidden>
+            <option value="">Inglês e espanhol</option>
+            <option value="ing">Só inglês</option>
+            <option value="esp">Só espanhol</option>
+          </select>
+        </div>
+        <div class="row">
+          <span class="lbl">Ordem</span>
+          <div class="seg" role="group" aria-label="Ordem das questões" id="order">
+            <button type="button" data-o="easy" aria-pressed="true">Mais fáceis primeiro</button>
+            <button type="button" data-o="exam">Ordem da prova</button>
+            <button type="button" data-o="rand">Embaralhadas</button>
+          </div>
+          <button class="link" id="reset" type="button">Zerar respostas</button>
+        </div>
       </div>
     </div>
     <div class="list" id="list"></div>
     <button class="more" id="more" type="button" hidden>Mostrar mais</button>
-    <p class="note" style="margin-top:2rem">Enunciados e gabaritos oficiais do Inep. Questões anuladas ficaram de fora. Em 2020 a 2023 o texto vem de uma transcrição das provas do Inep. Nos outros anos, as questões com figura, tabela ou fórmula aparecem como imagem da prova. A divisão por assunto foi feita à mão e pode ter questões que se encaixam em mais de um.</p>
   </section>
+  <p class="note" style="margin-top:2rem">Enunciados e gabaritos oficiais do Inep. Questões anuladas ficaram de fora. Em 2020 a 2023 o texto vem de uma transcrição das provas do Inep. Nos outros anos, as questões com figura, tabela ou fórmula aparecem como imagem da prova. A divisão por assunto foi feita à mão e pode ter questões que se encaixam em mais de um.</p>
 </div>
 
 <script type="application/json" id="resumo-data">{"stats": {"geografia": {"n": 164, "easy": 74, "med": 604, "topics": [{"t": "Questões ambientais", "n": 24, "easy": 13, "mid": 10, "hard": 1, "med": 580}, {"t": "Espaço agrário", "n": 22, "easy": 8, "mid": 11, "hard": 2, "med": 618}, {"t": "Globalização e geopolítica", "n": 28, "easy": 12, "mid": 14, "hard": 2, "med": 604}, {"t": "Urbanização", "n": 21, "easy": 14, "mid": 6, "hard": 1, "med": 578}, {"t": "Cartografia", "n": 11, "easy": 5, "mid": 5, "hard": 1, "med": 611}, {"t": "Relevo, clima, solos e água", "n": 32, "easy": 10, "mid": 18, "hard": 3, "med": 631}, {"t": "Indústria, energia e transportes", "n": 13, "easy": 4, "mid": 8, "hard": 1, "med": 622}, {"t": "População e migrações", "n": 13, "easy": 8, "mid": 3, "hard": 2, "med": 587}]}, "filosofia": {"n": 162, "easy": 75, "med": 606, "topics": [{"t": "Sociologia: cultura e sociedade", "n": 56, "easy": 38, "mid": 14, "hard": 4, "med": 564}, {"t": "Filosofia contemporânea e ética", "n": 40, "easy": 9, "mid": 23, "hard": 6, "med": 648}, {"t": "Filosofia antiga", "n": 18, "easy": 6, "mid": 9, "hard": 3, "med": 649}, {"t": "Filosofia moderna", "n": 22, "easy": 6, "mid": 10, "hard": 6, "med": 645}, {"t": "Filosofia medieval", "n": 5, "easy": 0, "mid": 4, "hard": 1, "med": 635}, {"t": "Política, cidadania e direitos", "n": 21, "easy": 16, "mid": 4, "hard": 1, "med": 576}]}, "historia": {"n": 169, "easy": 72, "med": 611, "topics": [{"t": "Antiguidade e Idade Média", "n": 24, "easy": 7, "mid": 15, "hard": 2, "med": 617}, {"t": "Brasil Colônia", "n": 15, "easy": 5, "mid": 10, "hard": 0, "med": 611}, {"t": "África, escravidão e resistência", "n": 11, "easy": 7, "mid": 4, "hard": 0, "med": 584}, {"t": "Primeira República e Era Vargas", "n": 30, "easy": 13, "mid": 14, "hard": 3, "med": 624}, {"t": "República de 1946, ditadura e Nova República", "n": 17, "easy": 5, "mid": 8, "hard": 4, "med": 633}, {"t": "Brasil Império", "n": 16, "easy": 6, "mid": 7, "hard": 3, "med": 622}, {"t": "Mundo contemporâneo", "n": 16, "easy": 6, "mid": 9, "hard": 1, "med": 624}, {"t": "Cultura, memória e patrimônio", "n": 16, "easy": 10, "mid": 5, "hard": 1, "med": 593}, {"t": "Idade Moderna e revoluções", "n": 24, "easy": 13, "mid": 9, "hard": 2, "med": 596}]}, "biologia": {"n": 166, "easy": 63, "med": 619, "topics": [{"t": "Fisiologia humana", "n": 26, "easy": 14, "mid": 9, "hard": 3, "med": 599}, {"t": "Ecologia e meio ambiente", "n": 34, "easy": 16, "mid": 15, "hard": 3, "med": 607}, {"t": "Citologia", "n": 9, "easy": 3, "mid": 5, "hard": 1, "med": 644}, {"t": "Genética", "n": 14, "easy": 5, "mid": 7, "hard": 2, "med": 624}, {"t": "Evolução e classificação", "n": 10, "easy": 4, "mid": 5, "hard": 1, "med": 625}, {"t": "Bioquímica e metabolismo", "n": 10, "easy": 1, "mid": 7, "hard": 2, "med": 660}, {"t": "Saúde, vírus e parasitas", "n": 22, "easy": 10, "mid": 8, "hard": 3, "med": 611}, {"t": "Biotecnologia", "n": 14, "easy": 5, "mid": 6, "hard": 3, "med": 657}, {"t": "Zoologia", "n": 11, "easy": 4, "mid": 6, "hard": 1, "med": 604}, {"t": "Botânica", "n": 16, "easy": 1, "mid": 13, "hard": 2, "med": 649}]}, "fisica": {"n": 163, "easy": 32, "med": 662, "topics": [{"t": "Energia e usinas", "n": 4, "easy": 0, "mid": 3, "hard": 1, "med": 688}, {"t": "Ondulatória e som", "n": 24, "easy": 5, "mid": 10, "hard": 8, "med": 662}, {"t": "Óptica", "n": 12, "easy": 1, "mid": 7, "hard": 4, "med": 667}, {"t": "Termologia", "n": 25, "easy": 6, "mid": 16, "hard": 3, "med": 658}, {"t": "Mecânica", "n": 39, "easy": 6, "mid": 22, "hard": 10, "med": 678}, {"t": "Eletricidade", "n": 33, "easy": 6, "mid": 17, "hard": 9, "med": 650}, {"t": "Física moderna e nuclear", "n": 5, "easy": 2, "mid": 3, "hard": 0, "med": 635}, {"t": "Eletromagnetismo", "n": 11, "easy": 1, "mid": 9, "hard": 1, "med": 650}, {"t": "Hidrostática", "n": 7, "easy": 3, "mid": 4, "hard": 0, "med": 636}, {"t": "Gravitação e astronomia", "n": 3, "easy": 2, "mid": 1, "hard": 0, "med": 597}]}, "quimica": {"n": 162, "easy": 31, "med": 653, "topics": [{"t": "Separação de misturas", "n": 13, "easy": 4, "mid": 6, "hard": 3, "med": 651}, {"t": "Ligações e propriedades da matéria", "n": 13, "easy": 5, "mid": 5, "hard": 3, "med": 628}, {"t": "Soluções", "n": 7, "easy": 0, "mid": 5, "hard": 2, "med": 689}, {"t": "Eletroquímica e oxirredução", "n": 15, "easy": 2, "mid": 10, "hard": 2, "med": 657}, {"t": "Química orgânica", "n": 41, "easy": 6, "mid": 23, "hard": 11, "med": 656}, {"t": "Reações inorgânicas e ácido-base", "n": 18, "easy": 0, "mid": 14, "hard": 4, "med": 666}, {"t": "Termoquímica, cinética e equilíbrio", "n": 14, "easy": 2, "mid": 8, "hard": 4, "med": 659}, {"t": "Estequiometria e gases", "n": 15, "easy": 1, "mid": 10, "hard": 3, "med": 661}, {"t": "Química ambiental", "n": 16, "easy": 11, "mid": 4, "hard": 1, "med": 580}, {"t": "Atomística e radioatividade", "n": 10, "easy": 0, "mid": 8, "hard": 2, "med": 667}]}, "linguagens": {"n": 550, "easy": 347, "med": 578, "topics": [{"t": "Espanhol", "n": 55, "easy": 38, "mid": 17, "hard": 0, "med": 579}, {"t": "Inglês", "n": 55, "easy": 49, "mid": 5, "hard": 1, "med": 561}, {"t": "Interpretação e gêneros textuais", "n": 91, "easy": 60, "mid": 24, "hard": 7, "med": 570}, {"t": "Artes", "n": 63, "easy": 30, "mid": 24, "hard": 9, "med": 601}, {"t": "Literatura", "n": 126, "easy": 58, "mid": 41, "hard": 23, "med": 607}, {"t": "Gramática e recursos expressivos", "n": 30, "easy": 17, "mid": 9, "hard": 4, "med": 594}, {"t": "Tecnologias da comunicação", "n": 37, "easy": 28, "mid": 9, "hard": 0, "med": 545}, {"t": "Variação linguística", "n": 48, "easy": 31, "mid": 15, "hard": 2, "med": 574}, {"t": "Educação física e corpo", "n": 45, "easy": 36, "mid": 7, "hard": 1, "med": 531}]}, "matematica": {"n": 489, "easy": 63, "med": 696, "topics": [{"t": "Aritmética e álgebra", "n": 86, "easy": 18, "mid": 38, "hard": 30, "med": 662}, {"t": "Geometria plana", "n": 51, "easy": 2, "mid": 17, "hard": 32, "med": 724}, {"t": "Funções e gráficos", "n": 74, "easy": 9, "mid": 30, "hard": 34, "med": 689}, {"t": "Estatística", "n": 61, "easy": 12, "mid": 28, "hard": 21, "med": 687}, {"t": "Geometria espacial", "n": 58, "easy": 6, "mid": 18, "hard": 34, "med": 704}, {"t": "Probabilidade", "n": 25, "easy": 2, "mid": 7, "hard": 15, "med": 769}, {"t": "Porcentagem e juros", "n": 30, "easy": 2, "mid": 12, "hard": 15, "med": 707}, {"t": "Razão, proporção e escala", "n": 76, "easy": 10, "mid": 31, "hard": 34, "med": 690}, {"t": "Análise combinatória", "n": 21, "easy": 0, "mid": 5, "hard": 16, "med": 742}, {"t": "Geometria analítica", "n": 7, "easy": 2, "mid": 1, "hard": 4, "med": 743}]}}, "files": {"geografia": ["geografia-2015.json", "geografia-2016.json", "geografia-2017.json", "geografia-2018.json", "geografia-2019.json", "geografia-2020.json", "geografia-2021.json", "geografia-2022.json", "geografia-2023.json", "geografia-2024.json", "geografia-2025.json"], "filosofia": ["filosofia-2015.json", "filosofia-2016.json", "filosofia-2017.json", "filosofia-2018.json", "filosofia-2019.json", "filosofia-2020.json", "filosofia-2021.json", "filosofia-2022.json", "filosofia-2023.json", "filosofia-2024.json", "filosofia-2025.json"], "historia": ["historia-2015.json", "historia-2016.json", "historia-2017.json", "historia-2018.json", "historia-2019.json", "historia-2020.json", "historia-2021.json", "historia-2022.json", "historia-2023.json", "historia-2024.json", "historia-2025.json"], "biologia": ["biologia-2015.json", "biologia-2016.json", "biologia-2017.json", "biologia-2018.json", "biologia-2019.json", "biologia-2020.json", "biologia-2021.json", "biologia-2022.json", "biologia-2023.json", "biologia-2024.json", "biologia-2025.json"], "fisica": ["fisica-2015.json", "fisica-2016.json", "fisica-2017.json", "fisica-2018.json", "fisica-2019.json", "fisica-2020.json", "fisica-2021.json", "fisica-2022.json", "fisica-2023.json", "fisica-2024.json", "fisica-2025.json"], "quimica": ["quimica-2015.json", "quimica-2016.json", "quimica-2017.json", "quimica-2018.json", "quimica-2019.json", "quimica-2020.json", "quimica-2021.json", "quimica-2022.json", "quimica-2023.json", "quimica-2024.json", "quimica-2025.json"], "linguagens": ["linguagens-2015.json", "linguagens-2016.json", "linguagens-2017.json", "linguagens-2018.json", "linguagens-2019.json", "linguagens-2020.json", "linguagens-2021.json", "linguagens-2022.json", "linguagens-2023.json", "linguagens-2024.json", "linguagens-2025.json"], "matematica": ["matematica-2015.json", "matematica-2016.json", "matematica-2017.json", "matematica-2018.json", "matematica-2019.json", "matematica-2020.json", "matematica-2021.json", "matematica-2022.json", "matematica-2023.json", "matematica-2024.json", "matematica-2025.json"]}}</script>
@@ -218,18 +257,27 @@ select{font-family:var(--body);font-size:.88rem;padding:4px 6px;border:1px solid
 const R=JSON.parse(document.getElementById('resumo-data').textContent);
 const SUBJ=[['biologia','Biologia'],['fisica','Física'],['quimica','Química'],['matematica','Matemática'],['linguagens','Linguagens'],['historia','História'],['geografia','Geografia'],['filosofia','Filosofia e Sociologia']];
 const NAME=Object.fromEntries(SUBJ);
+const AREA={linguagens:'LC',historia:'CH',geografia:'CH',filosofia:'CH',biologia:'CN',fisica:'CN',quimica:'CN',matematica:'MT'};
+const DAYS=y=>y<=2016?{1:['CH','CN'],2:['LC','MT']}:{1:['LC','CH'],2:['CN','MT']};
+const ANAME={LC:'Linguagens',CH:'Ciências Humanas',CN:'Ciências da Natureza',MT:'Matemática'};
 const PAGE=25;
-let cur=null,Q=[],cache={},selYears=new Set(),rankBy='n',shown=PAGE,order=null,resetArmed=false;
+const $=id=>document.getElementById(id);
+let view='resumo',cur=null,selYears=new Set(),rankBy='n',ordMode='easy',order=null,resetArmed=false;
+const files={};
 let ans={};try{ans=JSON.parse(localStorage.getItem('enem-banco-ans')||'{}')}catch(e){}
-try{for(const k of ['nat-enem-ans']){const old=JSON.parse(localStorage.getItem(k)||'{}');for(const kk in old)if(!ans[kk])ans[kk]=old[kk]}}catch(e){}
+try{const old=JSON.parse(localStorage.getItem('nat-enem-ans')||'{}');for(const k in old)if(!ans[k])ans[k]=old[k]}catch(e){}
 let okm={};try{okm=JSON.parse(localStorage.getItem('enem-banco-ok')||'{}')}catch(e){}
 const newSess=()=>({start:Date.now(),it:{}});
 let sess=newSess();try{const s=JSON.parse(localStorage.getItem('enem-banco-sessao')||'null');if(s&&s.it)sess=s}catch(e){}
+let ui={};try{ui=JSON.parse(localStorage.getItem('enem-banco-ui')||'{}')}catch(e){}
+const saveUI=()=>{try{localStorage.setItem('enem-banco-ui',JSON.stringify(ui))}catch(e){}};
 const save=()=>{try{localStorage.setItem('enem-banco-ans',JSON.stringify(ans));localStorage.setItem('enem-banco-ok',JSON.stringify(okm));localStorage.setItem('enem-banco-sessao',JSON.stringify(sess))}catch(e){}};
-function mark(k,q,l){okm[k]=l===q.g;sess.it[k]={s:cur,t:q.t,ok:l===q.g}}
+const key=q=>q.s+'-'+q.y+'-'+q.n+(q.l?'-'+q.l:'');
+function mark(k,q,l){okm[k]=l===q.g;sess.it[k]={s:q.s,t:q.t,ok:l===q.g}}
 function unmark(k){delete okm[k];delete sess.it[k]}
+function syncOk(list){let ch=false;list.forEach(q=>{const k=key(q);if(ans[k]&&!(k in okm)){okm[k]=ans[k]===q.g;ch=true}});if(ch)save()}
 function progOf(s){let n=0,r=0,w=0;for(const k in ans)if(k.startsWith(s+'-')){n++;if(okm[k]===true)r++;else if(okm[k]===false)w++}return{n,r,w}}
-const key=q=>cur+'-'+q.y+'-'+q.n+(q.l?'-'+q.l:'');
+function progList(list){let n=0,r=0;list.forEach(q=>{const a=ans[key(q)];if(a){n++;if(a===q.g)r++}});return{n,r,w:n-r,N:list.length}}
 const lvl=d=>d==null?'x':d<600?'f':d<700?'m':'d';
 const LVN={f:'Fácil',m:'Média',d:'Difícil',x:'Sem dado'};
 const chip=d=>'<span class="lv '+lvl(d)+'">'+LVN[lvl(d)]+(d!=null?' · '+d:'')+'</span>';
@@ -244,16 +292,63 @@ function md(s){
     const cls=/^(Disponível em|[A-ZÁÉÍÓÚ]{2,}[A-ZÁÉÍÓÚ ,.]*\s[A-Z]\.|Acesso em)/.test(t)?' class="src"':'';
     return'<p'+cls+'>'+t.replace(/\n/g,'<br>')+'</p>'}).join('');
 }
+function bar(el,p,label){
+  el.innerHTML='<i class="r" style="width:'+(p.N?p.r/p.N*100:0)+'%"></i><i class="w" style="width:'+(p.N?p.w/p.N*100:0)+'%"></i>';
+  el.setAttribute('aria-label',label);
+}
+function ptext(p,extra){
+  return'<b>'+p.n+'</b> de '+p.N+' respondidas · <span class="ok"><b>'+p.r+'</b> acertos</span> · <span class="bad"><b>'+p.w+'</b> erros</span>'+(p.n?' · '+Math.round(p.r/p.n*100)+'% de acerto':'')+(extra||'');
+}
+
+/* carregar arquivos de dados */
+async function loadFile(s,y){
+  const fn=s+'-'+y+'.json';
+  if(files[fn])return files[fn];
+  if(!R.files[s].includes(fn))return files[fn]=[];
+  files[fn]=fetch('dados/'+fn).then(r=>r.json()).then(d=>{d.forEach(q=>q.s=s);return files[fn]=d}).catch(()=>{delete files[fn];return null});
+  return files[fn];
+}
+const yearsOf=s=>R.files[s].map(f=>+f.slice(-9,-5));
+
+/* card de questão */
+function card(q,opt){
+  opt=opt||{};
+  const k=key(q),a=ans[k],el=document.createElement('article');el.className='q';
+  const st=a?(a===q.g?'<span class="state ok">acertou</span>':'<span class="state bad">errou · gabarito '+q.g+'</span>'):'';
+  const lang=q.l?' · '+(q.l==='ing'?'Inglês':'Espanhol'):'';
+  const reveal=!opt.blind||a;
+  const head='<div class="qh"><span class="num">Questão '+q.n+'</span><span>Enem '+q.y+lang+(opt.blind?' · '+NAME[q.s]:'')+'</span>'+(reveal?'<span class="tag">'+q.t+'</span>'+chip(q.d):'')+st+'</div>'+
+    (q.sh?'<div class="scan">'+q.sh.map(u=>'<img alt="Texto de apoio da prova" loading="lazy" src="'+u+'">').join('')+'</div>':'');
+  if(q.img){el.innerHTML=head+'<div class="scan">'+q.f.map(u=>'<img alt="Questão '+q.n+' do Enem '+q.y+', imagem da prova" loading="lazy" src="'+u+'">').join('')+'</div><div class="alts letters"></div>'}
+  else{const figs=(q.f||[]).map(u=>'<img alt="Figura da questão" loading="lazy" src="'+u+'">').join('');
+    el.innerHTML=head+'<div class="txt">'+md(q.c)+figs+'</div><div class="txt intro">'+md(q.i)+'</div><div class="alts"></div>'}
+  const box=el.querySelector('.alts');
+  q.a.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='alt';
+    b.innerHTML='<span class="L">'+o.l+'</span>'+(q.img?'':'<span class="X">'+(o.f?'<img alt="Alternativa '+o.l+'" loading="lazy" src="'+o.f+'">':'')+md(o.x).replace(/^<p>|<\/p>$/g,'')+'</span>');
+    if(q.img)b.setAttribute('aria-label','Alternativa '+o.l);
+    if(a){b.disabled=true;if(o.l===q.g)b.classList.add('right');else if(o.l===a)b.classList.add('wrong')}
+    b.onclick=()=>{ans[k]=o.l;mark(k,q,o.l);save();el.replaceWith(card(q,opt));refresh()};box.append(b)});
+  if(a){const f=document.createElement('div');f.className='foot';const r=document.createElement('button');r.className='link';r.type='button';r.textContent='Refazer esta questão';
+    r.onclick=()=>{delete ans[k];unmark(k);save();el.replaceWith(card(q,opt));refresh()};f.append(r);el.append(f)}
+  return el;
+}
+function paint(L,more,list,shown,opt,emptyMsg){
+  L.innerHTML='';
+  if(!list.length)L.innerHTML='<p class="empty">'+emptyMsg+'</p>';
+  list.slice(0,shown).forEach(q=>L.append(card(q,opt)));
+  more.hidden=list.length<=shown;more.textContent='Mostrar mais ('+(list.length-shown)+' restantes)';
+}
+function refresh(){if(view==='prova')pvStats();else if(view==='materia')stats()}
 
 /* abas */
-const tabs=document.getElementById('tabs');
-[['resumo','Resumo']].concat(SUBJ).forEach(([s,n])=>{const b=document.createElement('button');b.className='tab';b.type='button';b.role='tab';b.textContent=n;b.dataset.s=s;b.onclick=()=>go(s);tabs.append(b)});
+const tabs=$('tabs');
+[['resumo','Resumo'],['prova','Fazer prova']].concat(SUBJ).forEach(([s,n])=>{const b=document.createElement('button');b.className='tab';b.type='button';b.setAttribute('role','tab');b.textContent=n;b.dataset.s=s;b.onclick=()=>go(s);tabs.append(b)});
 
 /* resumo */
 function byEasy(ts){return ts.slice().sort((a,b)=>(a.med??999)-(b.med??999)||b.n-a.n)}
 function byN(ts){return ts.slice().sort((a,b)=>b.n-a.n||a.t.localeCompare(b.t,'pt'))}
 function drawSummary(){
-  const g=document.getElementById('sumgrid');g.innerHTML='';
+  const g=$('sumgrid');g.innerHTML='';
   SUBJ.forEach(([s,n])=>{const st=R.stats[s];if(!st)return;
     const top=byN(st.topics).slice(0,3);
     const must=st.topics.slice().sort((a,b)=>b.easy-a.easy||(a.med??999)-(b.med??999)).slice(0,3);
@@ -270,7 +365,7 @@ function drawSummary(){
 }
 
 /* encerrar sessão */
-const fim=document.getElementById('fim');
+const fim=$('fim');
 function showFim(){
   const it=Object.values(sess.it),n=it.length,r=it.filter(x=>x.ok).length,w=n-r;
   const mins=Math.max(1,Math.round((Date.now()-sess.start)/60000));
@@ -284,107 +379,147 @@ function showFim(){
       '<div style="overflow-x:auto"><table><thead><tr><th>Assunto</th><th>Feitas</th><th>Acertos</th><th>Erros</th></tr></thead><tbody>'+
       rows.map(([t,v])=>'<tr><td>'+t+'</td><td>'+v.n+'</td><td class="ok">'+v.r+'</td><td class="bad">'+(v.n-v.r)+'</td></tr>').join('')+'</tbody></table></div>'+
       (w?'<p class="note" style="margin:0">Os assuntos com mais erros estão no topo. Revise esses primeiro.</p>':'<p class="note" style="margin:0">Nenhum erro nesta sessão.</p>')+
-      '<div class="acts">'+(w&&cur?'<button class="endbtn" style="margin:0" type="button" id="fim-rev">Revisar os erros de '+NAME[cur]+'</button>':'')+'<button class="link" type="button" id="fim-x">Fechar</button></div>';
+      '<div class="acts">'+(w&&view==='materia'?'<button class="endbtn" style="margin:0" type="button" id="fim-rev">Revisar os erros de '+NAME[cur]+'</button>':'')+'<button class="link" type="button" id="fim-x">Fechar</button></div>';
   }
-  sess=newSess();save();
+  sess=newSess();save();pvStart=Date.now();
   fim.hidden=false;fim.scrollIntoView({behavior:'smooth',block:'start'});
-  document.getElementById('fim-x').onclick=()=>{fim.hidden=true};
-  const rv=document.getElementById('fim-rev');
-  if(rv)rv.onclick=()=>{fim.hidden=true;document.getElementById('mode').value='wrong';document.getElementById('level').value='';ts.value='';render();drawRank();document.querySelector('.bar2').scrollIntoView({behavior:'smooth',block:'start'})};
+  $('fim-x').onclick=()=>{fim.hidden=true};
+  const rv=$('fim-rev');
+  if(rv)rv.onclick=()=>{fim.hidden=true;$('mode').value='wrong';$('level').value='';ts.value='';render();$('bar2').scrollIntoView({behavior:'smooth',block:'start'})};
 }
-document.getElementById('end').onclick=showFim;document.getElementById('end2').onclick=showFim;
+$('end').onclick=showFim;$('end2').onclick=showFim;$('pv-end').onclick=showFim;
 
 /* matéria */
-const yb=document.getElementById('years'),ts=document.getElementById('topic'),L=document.getElementById('list'),more=document.getElementById('more');
+const yb=$('years'),ts=$('topic'),L=$('list'),more=$('more');
+let shown=PAGE;
 const allY=document.createElement('button');allY.className='chip';allY.type='button';allY.textContent='Todos';allY.onclick=()=>{selYears.clear();render()};yb.append(allY);
 for(let y=2015;y<=2025;y++){const b=document.createElement('button');b.className='chip';b.type='button';b.textContent=y;b.dataset.y=y;b.onclick=()=>{selYears.has(y)?selYears.delete(y):selYears.add(y);render()};yb.append(b)}
-['topic','level','mode'].forEach(id=>document.getElementById(id).onchange=()=>{render();drawRank()});
-document.getElementById('order').onchange=e=>{order=e.target.value==='rand'?new Map(Q.map(q=>[key(q),Math.random()])):null;render()};
-document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{rankBy=b.dataset.r;document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));drawRank()});
+['topic','level','mode','lang'].forEach(id=>$(id).onchange=()=>render());
+document.querySelectorAll('.rank .seg button').forEach(b=>b.onclick=()=>{rankBy=b.dataset.r;document.querySelectorAll('.rank .seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));drawRank()});
+document.querySelectorAll('#order button').forEach(b=>b.onclick=()=>{ordMode=b.dataset.o;order=null;document.querySelectorAll('#order button').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
 more.onclick=()=>{shown+=PAGE;render(true)};
-const rb=document.getElementById('reset');
+$('ftoggle').onclick=()=>{const o=$('bar2').classList.toggle('open');$('ftoggle').setAttribute('aria-expanded',o)};
+const rb=$('reset');
 rb.onclick=()=>{if(!resetArmed){resetArmed=true;rb.textContent='Confirmar: apagar respostas de '+NAME[cur];setTimeout(()=>{resetArmed=false;rb.textContent='Zerar respostas'},4000);return}
   for(const k in ans)if(k.startsWith(cur+'-')){delete ans[k];unmark(k)}save();resetArmed=false;rb.textContent='Zerar respostas';render()};
 
+let Q=[];
+const loaded=()=>Q.length>=R.stats[cur].n;
+function base(){ /* recorte usado na contagem: ano, assunto, dificuldade e língua (sem o filtro de respondidas) */
+  const t=ts.value,lv=$('level').value,lg=$('lang').value;
+  return Q.filter(q=>(!selYears.size||selYears.has(q.y))&&(!t||q.t===t)&&(!lv||lvl(q.d)===lv)&&(!lg||!q.l||q.l===lg));
+}
+function filtered(){
+  const m=$('mode').value;
+  let l=base().filter(q=>m==='all'||(m==='todo'&&!ans[key(q)])||(m==='wrong'&&ans[key(q)]&&ans[key(q)]!==q.g));
+  if(ordMode==='easy')l.sort((a,b)=>(a.d??9999)-(b.d??9999));
+  else if(ordMode==='exam')l.sort((a,b)=>a.y-b.y||a.n-b.n||(a.l||'').localeCompare(b.l||''));
+  else{if(!order)order=new Map();l.forEach(q=>{if(!order.has(key(q)))order.set(key(q),Math.random())});l.sort((a,b)=>order.get(key(a))-order.get(key(b)))}
+  return l;
+}
+function topicStats(){
+  if(!loaded()||!selYears.size)return R.stats[cur].topics;
+  const lg=$('lang').value,by={};
+  Q.filter(q=>selYears.has(q.y)&&(!lg||!q.l||q.l===lg)).forEach(q=>{(by[q.t]=by[q.t]||[]).push(q.d)});
+  return Object.entries(by).map(([t,ds])=>{const v=ds.filter(d=>d!=null).sort((a,b)=>a-b);return{t,n:ds.length,easy:v.filter(d=>d<600).length,med:v.length?v[v.length>>1]:null}});
+}
 function drawRank(){
-  const st=R.stats[cur],ol=document.getElementById('rank');
-  const tsr=rankBy==='n'?byN(st.topics):byEasy(st.topics);const max=Math.max(...st.topics.map(t=>t.n));
+  const tsx=topicStats(),ol=$('rank');
+  const yrs=[...selYears].sort();
+  $('rnote').textContent=selYears.size?(loaded()?'Contando só '+(yrs.length===1?'a prova de ':'as provas de ')+yrs.join(', ')+'.':'Carregando as questões para contar por ano…'):'Contando todas as provas de 2015 a 2025.';
+  const tsr=rankBy==='n'?byN(tsx):byEasy(tsx);const max=Math.max(1,...tsx.map(t=>t.n));
   ol.innerHTML='<li class="cols" aria-hidden="true"><span>Assunto</span><span>Questões</span><span>Fáceis</span><span>Nível</span></li>';
   tsr.forEach(t=>{const li=document.createElement('li'),b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',ts.value===t.t);
     b.innerHTML='<span class="nm">'+t.t+'</span><span class="cnt"><span class="bar"><i style="width:'+(t.n/max*100)+'%"></i></span>'+t.n+'</span><span class="ez">'+t.easy+'</span><span class="lvc">'+chip(t.med)+'</span>';
-    b.onclick=()=>{ts.value=ts.value===t.t?'':t.t;shown=PAGE;render();drawRank();document.querySelector('.bar2').scrollIntoView({behavior:'smooth',block:'start'})};
+    b.onclick=()=>{ts.value=ts.value===t.t?'':t.t;render();$('bar2').scrollIntoView({behavior:'smooth',block:'start'})};
     li.append(b);ol.append(li)});
+  const prev=ts.value,all=byN(R.stats[cur].topics),cnt=Object.fromEntries(tsx.map(t=>[t.t,t.n]));
+  ts.innerHTML='<option value="">Todos os assuntos</option>'+all.map(t=>'<option value="'+t.t+'">'+t.t+' ('+(cnt[t.t]||0)+')</option>').join('');
+  ts.value=prev;
 }
 function stats(){
-  let changed=false;Q.forEach(q=>{const k=key(q);if(ans[k]&&!(k in okm)){okm[k]=ans[k]===q.g;changed=true}});if(changed)save();
-  const st=R.stats[cur],done=Q.filter(q=>ans[key(q)]).length,right=Q.filter(q=>ans[key(q)]===q.g).length;
-  const p=progOf(cur),N=st.n;
-  document.getElementById('ptext').innerHTML='<b>'+p.n+'</b> de '+N+' respondidas · <span class="ok"><b>'+p.r+'</b> acertos</span> · <span class="bad"><b>'+p.w+'</b> erros</span>'+(p.n?' · '+Math.round(p.r/p.n*100)+'% de acerto':'');
-  document.getElementById('pbar').innerHTML='<i class="r" style="width:'+(p.r/N*100)+'%"></i><i class="w" style="width:'+(p.w/N*100)+'%"></i>';
-  document.getElementById('pbar').setAttribute('aria-label',p.n+' de '+N+' respondidas, '+p.r+' acertos, '+p.w+' erros');
-  const loaded=Q.length<st.n?' (carregando '+Q.length+' de '+st.n+')':'';
-  document.getElementById('stats').innerHTML='<span><b>'+st.n+'</b> questões de '+NAME[cur]+loaded+'</span><span><b>'+st.easy+'</b> fáceis</span><span><b>'+done+'</b> respondidas</span><span><b>'+right+'</b> acertos'+(done?' ('+Math.round(right/done*100)+'%)':'')+'</span>';
-}
-function card(q){
-  const k=key(q),a=ans[k],el=document.createElement('article');el.className='q';
-  const st=a?(a===q.g?'<span class="state ok">acertou</span>':'<span class="state bad">errou · gabarito '+q.g+'</span>'):'';
-  const lang=q.l?' · '+(q.l==='ing'?'Inglês':'Espanhol'):'';
-  const head='<div class="qh"><span class="num">Questão '+q.n+'</span><span>Enem '+q.y+lang+'</span><span class="tag">'+q.t+'</span>'+chip(q.d)+st+'</div>'+
-    (q.sh?'<div class="scan">'+q.sh.map(u=>'<img alt="Texto de apoio da prova" loading="lazy" src="'+u+'">').join('')+'</div>':'');
-  if(q.img){el.innerHTML=head+'<div class="scan">'+q.f.map(u=>'<img alt="Questão '+q.n+' do Enem '+q.y+', imagem da prova" loading="lazy" src="'+u+'">').join('')+'</div><div class="alts letters"></div>'}
-  else{const figs=(q.f||[]).map(u=>'<img alt="Figura da questão" loading="lazy" src="'+u+'">').join('');
-    el.innerHTML=head+'<div class="txt">'+md(q.c)+figs+'</div><div class="txt intro">'+md(q.i)+'</div><div class="alts"></div>'}
-  const box=el.querySelector('.alts');
-  q.a.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='alt';
-    b.innerHTML='<span class="L">'+o.l+'</span>'+(q.img?'':'<span class="X">'+(o.f?'<img alt="Alternativa '+o.l+'" loading="lazy" src="'+o.f+'">':'')+md(o.x).replace(/^<p>|<\/p>$/g,'')+'</span>');
-    if(q.img)b.setAttribute('aria-label','Alternativa '+o.l);
-    if(a){b.disabled=true;if(o.l===q.g)b.classList.add('right');else if(o.l===a)b.classList.add('wrong')}
-    b.onclick=()=>{ans[k]=o.l;mark(k,q,o.l);save();el.replaceWith(card(q));stats()};box.append(b)});
-  if(a){const f=document.createElement('div');f.className='foot';const r=document.createElement('button');r.className='link';r.type='button';r.textContent='Refazer esta questão';
-    r.onclick=()=>{delete ans[k];unmark(k);save();el.replaceWith(card(q));stats()};f.append(r);el.append(f)}
-  return el;
-}
-function filtered(){
-  const t=ts.value,lv=document.getElementById('level').value,m=document.getElementById('mode').value,o=document.getElementById('order').value;
-  let l=Q.filter(q=>(!selYears.size||selYears.has(q.y))&&(!t||q.t===t)&&(!lv||lvl(q.d)===lv)&&(m==='all'||(m==='todo'&&!ans[key(q)])||(m==='wrong'&&ans[key(q)]&&ans[key(q)]!==q.g)));
-  if(o==='easy')l.sort((a,b)=>(a.d??9999)-(b.d??9999));
-  else if(o==='exam')l.sort((a,b)=>a.y-b.y||a.n-b.n);
-  else if(order)l.sort((a,b)=>(order.get(key(a))??1)-(order.get(key(b))??1));
-  return l;
+  syncOk(Q);
+  const b=base(),p=progList(b),st=R.stats[cur];
+  let extra='';
+  if(!loaded())extra=' · carregando questões ('+Q.length+' de '+st.n+')';
+  else if(b.length<st.n)extra=' · filtro ativo ('+st.n+' no total de '+NAME[cur]+')';
+  $('ptext').innerHTML=ptext(p,extra);
+  bar($('pbar'),p,p.n+' de '+p.N+' respondidas, '+p.r+' acertos, '+p.w+' erros');
+  const act=selYears.size+(ts.value?1:0)+($('level').value?1:0)+($('mode').value!=='all'?1:0)+($('lang').value?1:0);
+  $('ftoggle').textContent='Filtros'+(act?' ('+act+')':'');
 }
 function render(append){
-  try{localStorage.setItem('enem-banco-ui',JSON.stringify({s:cur,y:[...selYears]}))}catch(e){}
+  ui.y=[...selYears];saveUI();
   allY.setAttribute('aria-pressed',selYears.size===0);
   yb.querySelectorAll('[data-y]').forEach(b=>b.setAttribute('aria-pressed',selYears.has(+b.dataset.y)));
   if(!append)shown=PAGE;
-  const l=filtered();L.innerHTML='';
-  if(!l.length)L.innerHTML='<p class="empty">'+(Q.length?'Nenhuma questão com esses filtros.':'Carregando questões…')+'</p>';
-  l.slice(0,shown).forEach(q=>L.append(card(q)));
-  more.hidden=l.length<=shown;more.textContent='Mostrar mais ('+(l.length-shown)+' restantes)';
+  if(!append)drawRank();
+  paint(L,more,filtered(),shown,{},Q.length?'Nenhuma questão com esses filtros.':'Carregando questões…');
   stats();
 }
 async function loadSubject(s){
-  if(cache[s]){Q=cache[s];return}
-  Q=[];const files=R.files[s];let pending=files.length;
-  await Promise.all(files.map(async f=>{try{const d=await (await fetch('dados/'+f)).json();if(cur===s){Q=Q.concat(d);render(true)}}catch(e){}
-    if(--pending===0&&cur===s)cache[s]=Q}));
-  if(cur===s&&Q.length<R.stats[s].n)L.insertAdjacentHTML('afterbegin','<p class="empty">Parte das questões não carregou. Recarregue a página.</p>');
+  Q=[];
+  await Promise.all(yearsOf(s).map(async y=>{const d=await loadFile(s,y);if(d&&cur===s&&view==='materia'){Q=Q.concat(d);render(true);if(loaded())drawRank()}}));
+  if(cur===s&&view==='materia'&&!loaded())L.insertAdjacentHTML('afterbegin','<p class="empty">Parte das questões não carregou. Recarregue a página.</p>');
 }
+
+/* fazer prova */
+const pvAno=$('pv-ano'),pvDia=$('pv-dia'),pvLang=$('pv-lang'),PL=$('pv-list'),pvMore=$('pv-more');
+let PV=[],pvShown=PAGE,pvStart=Date.now(),pvTick=null;
+for(let y=2025;y>=2015;y--)pvAno.insertAdjacentHTML('beforeend','<option value="'+y+'">'+y+'</option>');
+function fillDays(){
+  const y=+pvAno.value,d=DAYS(y),prev=pvDia.value||'1';
+  pvDia.innerHTML=[1,2].map(n=>'<option value="'+n+'">'+n+'º dia: '+d[n].map(a=>ANAME[a]).join(' e ')+'</option>').join('');
+  pvDia.value=prev;
+}
+pvAno.onchange=()=>{fillDays();loadProva()};pvDia.onchange=loadProva;pvLang.onchange=loadProva;
+pvMore.onclick=()=>{pvShown+=PAGE;pvPaint()};
+function pvPaint(){paint(PL,pvMore,PV,pvShown,{blind:true},'Carregando a prova…');pvStats()}
+function pvStats(){
+  syncOk(PV);
+  const p=progList(PV);
+  $('pv-ptext').innerHTML=ptext(p);
+  bar($('pv-pbar'),p,p.n+' de '+p.N+' respondidas');
+}
+function tick(){
+  const m=Math.floor((Date.now()-pvStart)/60000);
+  $('pv-timer').textContent='⏱ '+(m>=60?Math.floor(m/60)+'h'+String(m%60).padStart(2,'0'):m+' min');
+}
+async function loadProva(){
+  const y=+pvAno.value,d=+pvDia.value,lg=pvLang.value;
+  ui.pv={y,d,lg};saveUI();
+  const areas=DAYS(y)[d],subs=SUBJ.map(x=>x[0]).filter(s=>areas.includes(AREA[s]));
+  const hasLC=areas.includes('LC');
+  pvLang.disabled=!hasLC;pvLang.parentElement.querySelector('[for=pv-lang]').style.opacity=hasLC?1:.5;
+  PV=[];pvShown=PAGE;pvPaint();
+  const lim=d===1?[1,90]:[91,180];
+  const parts=await Promise.all(subs.map(s=>loadFile(s,y)));
+  if(+pvAno.value!==y||+pvDia.value!==d||pvLang.value!==lg)return;
+  PV=parts.filter(Boolean).flat().filter(q=>q.n>=lim[0]&&q.n<=lim[1]&&(!q.l||q.l===lg)).sort((a,b)=>a.n-b.n);
+  const tempo=d===1?'5h30, com a redação':'5h';
+  $('pv-info').textContent=PV.length+' questões, da '+(PV[0]?PV[0].n:'')+' à '+(PV.length?PV[PV.length-1].n:'')+'. Na prova real este dia tem '+tempo+'; isso dá cerca de 3 minutos por questão. Questões anuladas ficaram de fora.';
+  pvPaint();
+}
+
+/* navegação */
 function go(s){
   document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.s===s));
-  const isR=s==='resumo';document.getElementById('resumo').hidden=!isR;document.getElementById('materia').hidden=isR;
-  try{localStorage.setItem('enem-banco-ui',JSON.stringify({s,y:[...selYears]}))}catch(e){}
-  if(isR){cur=null;drawSummary();return}
-  cur=s;shown=PAGE;order=null;document.getElementById('order').value='easy';
-  document.getElementById('rtitle').textContent='Assuntos de '+NAME[s];
-  const tc=byN(R.stats[s].topics);
-  ts.innerHTML='<option value="">Todos os assuntos</option>'+tc.map(t=>'<option value="'+t.t+'">'+t.t+' ('+t.n+')</option>').join('');
-  drawRank();Q=cache[s]||[];render(false);loadSubject(s);
+  view=s==='resumo'?'resumo':s==='prova'?'prova':'materia';
+  $('resumo').hidden=view!=='resumo';$('prova').hidden=view!=='prova';$('materia').hidden=view!=='materia';
+  ui.s=s;saveUI();
+  clearInterval(pvTick);
+  if(view==='resumo'){cur=null;drawSummary();return}
+  if(view==='prova'){cur=null;pvStart=Date.now();tick();pvTick=setInterval(tick,30000);loadProva();return}
+  cur=s;order=null;Q=[];
+  $('lang').hidden=s!=='linguagens';if(s!=='linguagens')$('lang').value='';
+  $('rtitle').textContent='Assuntos de '+NAME[s];
+  ts.value='';
+  render();loadSubject(s);
 }
 drawSummary();
-let ui={};try{ui=JSON.parse(localStorage.getItem('enem-banco-ui')||'{}')}catch(e){}
 if(ui.y)selYears=new Set(ui.y);
-go(NAME[ui.s]?ui.s:'resumo');
+if(ui.pv){pvAno.value=ui.pv.y;fillDays();pvDia.value=ui.pv.d;pvLang.value=ui.pv.lg||'ing'}else fillDays();
+go(['resumo','prova'].includes(ui.s)||NAME[ui.s]?ui.s:'resumo');
 </script>
 
 <script>
