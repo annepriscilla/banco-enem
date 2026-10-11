@@ -115,6 +115,27 @@ select{font-family:var(--body);font-size:.88rem;padding:4px 6px;border:1px solid
 .foot{display:flex;justify-content:flex-end;margin-top:8px}
 .empty{color:var(--muted);text-align:center;padding:32px 0}
 .more{display:block;margin:18px auto 0;font-family:var(--display);font-size:.95rem;border:1px solid var(--accent);color:var(--accent);background:var(--paper);border-radius:999px;padding:8px 18px;cursor:pointer}
+.prog{display:grid;gap:5px}
+.ptext{display:flex;flex-wrap:wrap;gap:2px 14px;align-items:center;font-family:var(--mono);font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.ptext b{color:var(--fg);font-weight:500}
+.ptext .ok b{color:var(--ok)} .ptext .bad b{color:var(--bad)}
+.pbar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--line)}
+.pbar i{display:block;height:100%}
+.pbar .r{background:var(--ok)} .pbar .w{background:var(--bad)}
+.endbtn{margin-left:auto;font-family:var(--display);font-size:.82rem;border:1px solid var(--accent);color:var(--accent);background:var(--paper);border-radius:999px;padding:3px 12px;cursor:pointer}
+.endbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.fim{display:grid;gap:12px;margin-bottom:1.4rem;border-color:var(--accent)}
+.fim .big{display:flex;flex-wrap:wrap;gap:6px 26px}
+.fim .big div{display:grid}
+.fim .big strong{font-family:var(--display);font-size:1.8rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.fim .big span{font-size:.78rem;color:var(--muted)}
+.fim table{width:100%;border-collapse:collapse;font-size:.88rem}
+.fim th{font-family:var(--display);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-align:right;font-weight:500;padding:4px 0 4px 10px;border-bottom:1px solid var(--line)}
+.fim th:first-child,.fim td:first-child{text-align:left;padding-left:0}
+.fim td{text-align:right;padding:5px 0 5px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.fim .acts{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.sum .mine{font-size:.85rem;color:var(--muted)}
+.sum .mine b{color:var(--fg);font-weight:600}
 @media (prefers-reduced-motion:no-preference){.alt{transition:border-color .15s,background .15s}}
 </style>
 </head>
@@ -131,12 +152,15 @@ select{font-family:var(--body);font-size:.88rem;padding:4px 6px;border:1px solid
   <button type="button" class="x" id="install-x" aria-label="Fechar aviso">Fechar</button>
 </div>
   <div class="tabs" role="tablist" id="tabs"></div>
+  <section class="box fim" id="fim" hidden aria-live="polite" style="margin-top:1.2rem"></section>
 
   <section id="resumo">
     <div class="box tri">
       <h2>Por que as fáceis importam mais</h2>
       <p>A nota do Enem usa a TRI. Ela olha a coerência das respostas: quem erra uma questão fácil e acerta uma difícil parece ter chutado, e a nota cai. Por isso as fáceis são a base. Acertar todas elas rende mais do que acertar algumas difíceis.</p>
       <p class="note">A dificuldade vem dos microdados do Inep, na escala de notas do Enem. <span class="lv f">Fácil</span> abaixo de 600 pontos, <span class="lv m">Média</span> de 600 a 699, <span class="lv d">Difícil</span> a partir de 700. Uma questão de 550 é acertada, em geral, por quem tira perto de 550.</p>
+      <p class="note">Suas respostas ficam salvas sozinhas neste aparelho, a cada clique. Pode fechar quando cansar e continuar depois do ponto onde parou. Use "Encerrar e ver resultado" para ver como foi a sessão.</p>
+      <button class="endbtn" style="margin:0;justify-self:start" type="button" id="end2">Encerrar e ver resultado</button>
     </div>
     <div class="sumgrid" id="sumgrid"></div>
   </section>
@@ -156,6 +180,10 @@ select{font-family:var(--body);font-size:.88rem;padding:4px 6px;border:1px solid
     </section>
 
     <div class="bar2">
+      <div class="prog">
+        <div class="ptext"><span id="ptext"></span><button class="endbtn" id="end" type="button">Encerrar e ver resultado</button></div>
+        <div class="pbar" id="pbar" role="img" aria-label="Progresso"></div>
+      </div>
       <div class="row" id="years"><span class="lbl">Ano</span></div>
       <div class="row">
         <span class="lbl">Filtros</span>
@@ -194,7 +222,13 @@ const PAGE=25;
 let cur=null,Q=[],cache={},selYears=new Set(),rankBy='n',shown=PAGE,order=null,resetArmed=false;
 let ans={};try{ans=JSON.parse(localStorage.getItem('enem-banco-ans')||'{}')}catch(e){}
 try{for(const k of ['nat-enem-ans']){const old=JSON.parse(localStorage.getItem(k)||'{}');for(const kk in old)if(!ans[kk])ans[kk]=old[kk]}}catch(e){}
-const save=()=>{try{localStorage.setItem('enem-banco-ans',JSON.stringify(ans))}catch(e){}};
+let okm={};try{okm=JSON.parse(localStorage.getItem('enem-banco-ok')||'{}')}catch(e){}
+const newSess=()=>({start:Date.now(),it:{}});
+let sess=newSess();try{const s=JSON.parse(localStorage.getItem('enem-banco-sessao')||'null');if(s&&s.it)sess=s}catch(e){}
+const save=()=>{try{localStorage.setItem('enem-banco-ans',JSON.stringify(ans));localStorage.setItem('enem-banco-ok',JSON.stringify(okm));localStorage.setItem('enem-banco-sessao',JSON.stringify(sess))}catch(e){}};
+function mark(k,q,l){okm[k]=l===q.g;sess.it[k]={s:cur,t:q.t,ok:l===q.g}}
+function unmark(k){delete okm[k];delete sess.it[k]}
+function progOf(s){let n=0,r=0,w=0;for(const k in ans)if(k.startsWith(s+'-')){n++;if(okm[k]===true)r++;else if(okm[k]===false)w++}return{n,r,w}}
 const key=q=>cur+'-'+q.y+'-'+q.n+(q.l?'-'+q.l:'');
 const lvl=d=>d==null?'x':d<600?'f':d<700?'m':'d';
 const LVN={f:'Fácil',m:'Média',d:'Difícil',x:'Sem dado'};
@@ -229,9 +263,36 @@ function drawSummary(){
       '<dl><div><dt>O que mais cai</dt><dd>'+top.map(t=>t.t+' ('+t.n+')').join(', ')+'</dd></div>'+
       '<div><dt>Não pode errar</dt><dd>'+must.map(t=>t.t+' ('+t.easy+' fáceis)').join(', ')+'</dd></div>'+
       (easiest?'<div><dt>Assunto mais fácil</dt><dd>'+easiest.t+' '+chip(easiest.med)+'</dd></div>':'')+'</dl>';
+    const p=progOf(s);
+    if(p.n)el.insertAdjacentHTML('beforeend','<div class="mine">Seu progresso: <b>'+p.n+'</b> de '+st.n+' · <span class="ok">'+p.r+' acertos</span> · <span class="bad">'+p.w+' erros</span></div><div class="pbar"><i class="r" style="width:'+(p.r/st.n*100)+'%"></i><i class="w" style="width:'+(p.w/st.n*100)+'%"></i></div>');
     const b=document.createElement('button');b.className='link go';b.type='button';b.textContent='Ver questões de '+n;b.onclick=()=>go(s);el.append(b);
     g.append(el)});
 }
+
+/* encerrar sessão */
+const fim=document.getElementById('fim');
+function showFim(){
+  const it=Object.values(sess.it),n=it.length,r=it.filter(x=>x.ok).length,w=n-r;
+  const mins=Math.max(1,Math.round((Date.now()-sess.start)/60000));
+  if(!n){fim.innerHTML='<h2>Resultado da sessão</h2><p class="note" style="margin:0">Você ainda não respondeu nenhuma questão nesta sessão.</p><div class="acts"><button class="link" type="button" id="fim-x">Fechar</button></div>'}
+  else{
+    const by={};it.forEach(x=>{const k=NAME[x.s]+' — '+x.t;(by[k]=by[k]||{n:0,r:0}).n++;if(x.ok)by[k].r++});
+    const rows=Object.entries(by).sort((a,b)=>(b[1].n-b[1].r)-(a[1].n-a[1].r)||b[1].n-a[1].n);
+    const tempo=mins<120?mins+' min':Math.round(mins/60)+' h';
+    fim.innerHTML='<h2>Resultado da sessão</h2>'+
+      '<div class="big"><div><strong>'+n+'</strong><span>respondidas</span></div><div><strong class="ok">'+r+'</strong><span>acertos</span></div><div><strong class="bad">'+w+'</strong><span>erros</span></div><div><strong>'+Math.round(r/n*100)+'%</strong><span>de acerto</span></div><div><strong>'+tempo+'</strong><span>de estudo</span></div></div>'+
+      '<div style="overflow-x:auto"><table><thead><tr><th>Assunto</th><th>Feitas</th><th>Acertos</th><th>Erros</th></tr></thead><tbody>'+
+      rows.map(([t,v])=>'<tr><td>'+t+'</td><td>'+v.n+'</td><td class="ok">'+v.r+'</td><td class="bad">'+(v.n-v.r)+'</td></tr>').join('')+'</tbody></table></div>'+
+      (w?'<p class="note" style="margin:0">Os assuntos com mais erros estão no topo. Revise esses primeiro.</p>':'<p class="note" style="margin:0">Nenhum erro nesta sessão.</p>')+
+      '<div class="acts">'+(w&&cur?'<button class="endbtn" style="margin:0" type="button" id="fim-rev">Revisar os erros de '+NAME[cur]+'</button>':'')+'<button class="link" type="button" id="fim-x">Fechar</button></div>';
+  }
+  sess=newSess();save();
+  fim.hidden=false;fim.scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('fim-x').onclick=()=>{fim.hidden=true};
+  const rv=document.getElementById('fim-rev');
+  if(rv)rv.onclick=()=>{fim.hidden=true;document.getElementById('mode').value='wrong';document.getElementById('level').value='';ts.value='';render();drawRank();document.querySelector('.bar2').scrollIntoView({behavior:'smooth',block:'start'})};
+}
+document.getElementById('end').onclick=showFim;document.getElementById('end2').onclick=showFim;
 
 /* matéria */
 const yb=document.getElementById('years'),ts=document.getElementById('topic'),L=document.getElementById('list'),more=document.getElementById('more');
@@ -243,7 +304,7 @@ document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{rankBy=b.data
 more.onclick=()=>{shown+=PAGE;render(true)};
 const rb=document.getElementById('reset');
 rb.onclick=()=>{if(!resetArmed){resetArmed=true;rb.textContent='Confirmar: apagar respostas de '+NAME[cur];setTimeout(()=>{resetArmed=false;rb.textContent='Zerar respostas'},4000);return}
-  for(const k in ans)if(k.startsWith(cur+'-'))delete ans[k];save();resetArmed=false;rb.textContent='Zerar respostas';render()};
+  for(const k in ans)if(k.startsWith(cur+'-')){delete ans[k];unmark(k)}save();resetArmed=false;rb.textContent='Zerar respostas';render()};
 
 function drawRank(){
   const st=R.stats[cur],ol=document.getElementById('rank');
@@ -255,7 +316,12 @@ function drawRank(){
     li.append(b);ol.append(li)});
 }
 function stats(){
+  let changed=false;Q.forEach(q=>{const k=key(q);if(ans[k]&&!(k in okm)){okm[k]=ans[k]===q.g;changed=true}});if(changed)save();
   const st=R.stats[cur],done=Q.filter(q=>ans[key(q)]).length,right=Q.filter(q=>ans[key(q)]===q.g).length;
+  const p=progOf(cur),N=st.n;
+  document.getElementById('ptext').innerHTML='<b>'+p.n+'</b> de '+N+' respondidas · <span class="ok"><b>'+p.r+'</b> acertos</span> · <span class="bad"><b>'+p.w+'</b> erros</span>'+(p.n?' · '+Math.round(p.r/p.n*100)+'% de acerto':'');
+  document.getElementById('pbar').innerHTML='<i class="r" style="width:'+(p.r/N*100)+'%"></i><i class="w" style="width:'+(p.w/N*100)+'%"></i>';
+  document.getElementById('pbar').setAttribute('aria-label',p.n+' de '+N+' respondidas, '+p.r+' acertos, '+p.w+' erros');
   const loaded=Q.length<st.n?' (carregando '+Q.length+' de '+st.n+')':'';
   document.getElementById('stats').innerHTML='<span><b>'+st.n+'</b> questões de '+NAME[cur]+loaded+'</span><span><b>'+st.easy+'</b> fáceis</span><span><b>'+done+'</b> respondidas</span><span><b>'+right+'</b> acertos'+(done?' ('+Math.round(right/done*100)+'%)':'')+'</span>';
 }
@@ -273,9 +339,9 @@ function card(q){
     b.innerHTML='<span class="L">'+o.l+'</span>'+(q.img?'':'<span class="X">'+(o.f?'<img alt="Alternativa '+o.l+'" loading="lazy" src="'+o.f+'">':'')+md(o.x).replace(/^<p>|<\/p>$/g,'')+'</span>');
     if(q.img)b.setAttribute('aria-label','Alternativa '+o.l);
     if(a){b.disabled=true;if(o.l===q.g)b.classList.add('right');else if(o.l===a)b.classList.add('wrong')}
-    b.onclick=()=>{ans[k]=o.l;save();el.replaceWith(card(q));stats()};box.append(b)});
+    b.onclick=()=>{ans[k]=o.l;mark(k,q,o.l);save();el.replaceWith(card(q));stats()};box.append(b)});
   if(a){const f=document.createElement('div');f.className='foot';const r=document.createElement('button');r.className='link';r.type='button';r.textContent='Refazer esta questão';
-    r.onclick=()=>{delete ans[k];save();el.replaceWith(card(q));stats()};f.append(r);el.append(f)}
+    r.onclick=()=>{delete ans[k];unmark(k);save();el.replaceWith(card(q));stats()};f.append(r);el.append(f)}
   return el;
 }
 function filtered(){
@@ -308,7 +374,7 @@ function go(s){
   document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.s===s));
   const isR=s==='resumo';document.getElementById('resumo').hidden=!isR;document.getElementById('materia').hidden=isR;
   try{localStorage.setItem('enem-banco-ui',JSON.stringify({s,y:[...selYears]}))}catch(e){}
-  if(isR){cur=null;return}
+  if(isR){cur=null;drawSummary();return}
   cur=s;shown=PAGE;order=null;document.getElementById('order').value='easy';
   document.getElementById('rtitle').textContent='Assuntos de '+NAME[s];
   const tc=byN(R.stats[s].topics);
