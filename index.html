@@ -172,7 +172,12 @@ select{font-family:var(--body);font-size:.88rem;padding:4px 6px;border:1px solid
 .rd .pills{display:flex;flex-wrap:wrap;gap:6px}
 .rd .pills span{font-size:.85rem;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:2px 10px}
 @media (max-width:480px){.rd summary{grid-template-columns:3.4rem minmax(0,1fr)}.rd .op{grid-column:2}}
-.timer{font-family:var(--mono)}
+.tm{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.tm .clock{font-family:var(--mono);font-size:.9rem;color:var(--fg);font-variant-numeric:tabular-nums}
+.tm .clock.paused{color:var(--muted)}
+.tm .pace{font-size:.75rem}
+.tbtn{font-family:var(--display);font-size:.75rem;border:1px solid var(--line);background:var(--paper);color:var(--fg);border-radius:999px;padding:2px 9px;cursor:pointer}
+.tbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .ftoggle{display:none;justify-self:start;font-family:var(--display);font-size:.85rem;border:1px solid var(--line);background:var(--paper);color:var(--fg);border-radius:999px;padding:4px 12px;cursor:pointer}
 .ftoggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .fbody{display:grid;gap:8px}
@@ -235,7 +240,7 @@ select{font-family:var(--body);font-size:.88rem;padding:4px 6px;border:1px solid
     </div>
     <div class="bar2">
       <div class="prog">
-        <div class="ptext"><span id="pv-ptext"></span><span id="pv-timer" class="timer"></span><button class="endbtn" id="pv-end" type="button">Encerrar e ver resultado</button></div>
+        <div class="ptext"><span id="pv-ptext"></span><span class="tm" id="tm-p"></span><button class="endbtn" id="pv-end" type="button">Encerrar e ver resultado</button></div>
         <div class="pbar" id="pv-pbar" role="img" aria-label="Progresso"></div>
       </div>
     </div>
@@ -259,7 +264,7 @@ select{font-family:var(--body);font-size:.88rem;padding:4px 6px;border:1px solid
 
     <div class="bar2" id="bar2">
       <div class="prog">
-        <div class="ptext"><span id="ptext"></span><button class="endbtn" id="end" type="button">Encerrar e ver resultado</button></div>
+        <div class="ptext"><span id="ptext"></span><span class="tm" id="tm-m"></span><button class="endbtn" id="end" type="button">Encerrar e ver resultado</button></div>
         <div class="pbar" id="pbar" role="img" aria-label="Progresso"></div>
       </div>
       <button class="ftoggle" id="ftoggle" type="button" aria-expanded="false" aria-controls="fbody">Filtros</button>
@@ -379,7 +384,7 @@ function card(q,opt){
     b.innerHTML='<span class="L">'+o.l+'</span>'+(q.img?'':'<span class="X">'+(o.f?'<img alt="Alternativa '+o.l+'" loading="lazy" src="'+o.f+'">':'')+md(o.x).replace(/^<p>|<\/p>$/g,'')+'</span>');
     if(q.img)b.setAttribute('aria-label','Alternativa '+o.l);
     if(a){b.disabled=true;if(o.l===q.g)b.classList.add('right');else if(o.l===a)b.classList.add('wrong')}
-    b.onclick=()=>{ans[k]=o.l;mark(k,q,o.l);save();el.replaceWith(card(q,opt));refresh()};box.append(b)});
+    b.onclick=()=>{ans[k]=o.l;mark(k,q,o.l);save();const v=tmV();if(v&&TM[v].on&&TM[v].t0){TM[v].q++;tmSave()}el.replaceWith(card(q,opt));refresh();drawTm()};box.append(b)});
   if(a){const f=document.createElement('div');f.className='foot';const r=document.createElement('button');r.className='link';r.type='button';r.textContent='Refazer esta questão';
     r.onclick=()=>{delete ans[k];unmark(k);save();el.replaceWith(card(q,opt));refresh()};f.append(r);el.append(f)}
   return el;
@@ -433,7 +438,7 @@ function showFim(){
       (w?'<p class="note" style="margin:0">Os assuntos com mais erros estão no topo. Revise esses primeiro.</p>':'<p class="note" style="margin:0">Nenhum erro nesta sessão.</p>')+
       '<div class="acts">'+(w&&view==='materia'?'<button class="endbtn" style="margin:0" type="button" id="fim-rev">Revisar os erros de '+NAME[cur]+'</button>':'')+'<button class="link" type="button" id="fim-x">Fechar</button></div>';
   }
-  sess=newSess();save();pvStart=Date.now();
+  sess=newSess();save();
   fim.hidden=false;fim.scrollIntoView({behavior:'smooth',block:'start'});
   $('fim-x').onclick=()=>{fim.hidden=true};
   const rv=$('fim-rev');
@@ -517,7 +522,7 @@ async function loadSubject(s){
 
 /* fazer prova */
 const pvAno=$('pv-ano'),pvDia=$('pv-dia'),pvLang=$('pv-lang'),PL=$('pv-list'),pvMore=$('pv-more');
-let PV=[],pvShown=PAGE,pvStart=Date.now(),pvTick=null;
+let PV=[],pvShown=PAGE;
 for(let y=2025;y>=2015;y--)pvAno.insertAdjacentHTML('beforeend','<option value="'+y+'">'+y+'</option>');
 function fillDays(){
   const y=+pvAno.value,d=DAYS(y),prev=pvDia.value||'1';
@@ -533,10 +538,7 @@ function pvStats(){
   $('pv-ptext').innerHTML=ptext(p);
   bar($('pv-pbar'),p,p.n+' de '+p.N+' respondidas');
 }
-function tick(){
-  const m=Math.floor((Date.now()-pvStart)/60000);
-  $('pv-timer').textContent='⏱ '+(m>=60?Math.floor(m/60)+'h'+String(m%60).padStart(2,'0'):m+' min');
-}
+
 async function loadProva(){
   const y=+pvAno.value,d=+pvDia.value,lg=pvLang.value;
   ui.pv={y,d,lg};saveUI();
@@ -588,17 +590,42 @@ function drawRd(){
 }
 document.querySelectorAll('#rd-nav button').forEach(b=>b.onclick=()=>{rdTab=b.dataset.r;drawRd()});
 
+/* cronômetro (m = matérias, p = prova) */
+const TM=Object.assign({m:{on:false,acc:0,t0:null,q:0},p:{on:true,acc:0,t0:null,q:0}},ui.tm||{});
+const tmV=()=>view==='prova'?'p':view==='materia'?'m':null;
+const fmt=ms=>{const t=Math.floor(ms/1000),h=Math.floor(t/3600),m=Math.floor(t%3600/60),x=t%60;return(h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0')};
+const tmEl=v=>TM[v].acc+(TM[v].t0?Date.now()-TM[v].t0:0);
+function tmSave(){ui.tm=TM;saveUI()}
+function drawTm(){
+  ['m','p'].forEach(v=>{const box=$('tm-'+v),T=TM[v];if(!box)return;
+    if(!T.on){box.innerHTML='<button class="tbtn" type="button" data-a="on">⏱ Ligar cronômetro</button>';}
+    else{const e=tmEl(v),pace=T.q?' · '+fmt(e/T.q)+' por questão':'';
+      box.innerHTML='<span class="clock'+(T.t0?'':' paused')+'">⏱ '+fmt(e)+'</span><span class="pace">'+(T.t0?'':'pausado')+pace+'</span>'+
+        '<button class="tbtn" type="button" data-a="'+(T.t0?'pause':'go')+'">'+(T.t0?'Pausar':'Continuar')+'</button><button class="tbtn" type="button" data-a="zero">Zerar</button><button class="tbtn" type="button" data-a="off">Desligar</button>'}
+    box.querySelectorAll('button').forEach(b=>b.onclick=()=>tmAct(v,b.dataset.a))});
+}
+function tmAct(v,a){const T=TM[v];
+  if(a==='on'){T.on=true;T.acc=0;T.q=0;T.t0=Date.now()}
+  else if(a==='pause'){T.acc=tmEl(v);T.t0=null}
+  else if(a==='go'){T.t0=Date.now()}
+  else if(a==='zero'){T.acc=0;T.q=0;T.t0=T.t0?Date.now():null}
+  else if(a==='off'){T.on=false;T.acc=0;T.q=0;T.t0=null}
+  tmSave();drawTm();
+}
+function tmStartIfOn(v){const T=TM[v];if(T.on&&!T.t0&&T.acc===0){T.t0=Date.now();tmSave()}}
+setInterval(()=>{const v=tmV();if(v&&TM[v].on&&TM[v].t0){const c=$('tm-'+v).querySelector('.clock');if(c)c.textContent='⏱ '+fmt(tmEl(v))}},1000);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)tmSave()});
+
 /* navegação */
 function go(s){
   document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.s===s));
   view=['resumo','prova','redacao'].includes(s)?s:'materia';
   $('resumo').hidden=view!=='resumo';$('prova').hidden=view!=='prova';$('materia').hidden=view!=='materia';$('redacao').hidden=view!=='redacao';
   ui.s=s;saveUI();
-  clearInterval(pvTick);
   if(view==='resumo'){cur=null;drawSummary();return}
   if(view==='redacao'){cur=null;drawRd();return}
-  if(view==='prova'){cur=null;pvStart=Date.now();tick();pvTick=setInterval(tick,30000);loadProva();return}
-  cur=s;order=null;Q=[];
+  if(view==='prova'){cur=null;tmStartIfOn('p');drawTm();loadProva();return}
+  cur=s;order=null;Q=[];drawTm();
   $('lang').hidden=s!=='linguagens';if(s!=='linguagens')$('lang').value='';
   $('rtitle').textContent='Assuntos de '+NAME[s];
   ts.value='';
