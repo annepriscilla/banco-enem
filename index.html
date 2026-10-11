@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Questões do Enem 2015 a 2025 por matéria e assunto, com a dificuldade oficial do Inep.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}*,*::before,*::after{box-sizing:border-box}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%;height:auto}[hidden]{display:none!important}</style>
+<title>Banco Enem 2015–2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Literata:opsz,wght@7..72,400;7..72,600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: coluna única de leitura; abas por matéria; ranking de assuntos antes da lista; cada questão como folha de prova */
+:root{
+  --bg:#f3f5f2; --paper:#ffffff; --fg:#1d2420; --muted:#5d6a63; --line:#d8dfda;
+  --accent:#1f6f5c; --accent-soft:#e1efe9;
+  --ok:#1e7a3c; --ok-soft:#e3f3e7; --warn:#9a6a00; --warn-soft:#f7eed6; --bad:#b3372e; --bad-soft:#f8e4e2;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Literata",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121614; --paper:#1a201d; --fg:#e4ebe6; --muted:#9aa8a0; --line:#2c3531; --accent:#6cc4a8; --accent-soft:#1d3029;
+  --ok:#6fd08f; --ok-soft:#173022; --warn:#e2b54a; --warn-soft:#33290f; --bad:#f08a80; --bad-soft:#3a1f1c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121614; --paper:#1a201d; --fg:#e4ebe6; --muted:#9aa8a0; --line:#2c3531; --accent:#6cc4a8; --accent-soft:#1d3029;
+  --ok:#6fd08f; --ok-soft:#173022; --warn:#e2b54a; --warn-soft:#33290f; --bad:#f08a80; --bad-soft:#3a1f1c; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6}
+.wrap{max-width:48rem;margin:0 auto;padding-inline:16px;padding-block:28px 64px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,5vw,2.6rem);line-height:1.1;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:0 0 .5rem;text-wrap:balance}
+h3{font-family:var(--display);font-weight:700;font-size:1rem;margin:0}
+.lede{color:var(--muted);margin:.6rem 0 0;max-width:62ch}
+.tabs{display:flex;gap:2px;margin-top:1.4rem;border-bottom:2px solid var(--line);overflow-x:auto;scrollbar-width:thin}
+.tab{flex:0 0 auto;font-family:var(--display);font-weight:700;font-size:.98rem;background:none;border:0;border-bottom:3px solid transparent;margin-bottom:-2px;padding:8px 12px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
+.tab:focus-visible,.chip:focus-visible,.alt:focus-visible,select:focus-visible,.link:focus-visible,.rank button:focus-visible,.more:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.note{font-size:.88rem;color:var(--muted)}
+.box{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:16px 18px}
+.tri{margin-top:1.4rem;display:grid;gap:.4rem}
+.tri p{margin:0;max-width:64ch}
+.sumgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,21rem),1fr));gap:14px;margin-top:1.2rem}
+.sum{display:grid;gap:10px;align-content:start;min-width:0}
+.sum .head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.sum .meta{font-family:var(--mono);font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.sum dl{margin:0;display:grid;gap:6px}
+.sum dt{font-family:var(--display);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.sum dd{margin:0;font-size:.92rem}
+.sum .go{justify-self:start}
+.lv{display:inline-block;font-family:var(--display);font-size:.74rem;padding:1px 8px;border-radius:3px;white-space:nowrap}
+.lv.f{background:var(--ok-soft);color:var(--ok)} .lv.m{background:var(--warn-soft);color:var(--warn)} .lv.d{background:var(--bad-soft);color:var(--bad)} .lv.x{background:var(--line);color:var(--muted)}
+.rank{margin-top:1.4rem}
+.rhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{font-family:var(--display);font-size:.8rem;border:0;background:var(--paper);color:var(--muted);padding:4px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--paper)}
+.rank ol{list-style:none;margin:.6rem 0 0;padding:0;display:grid;gap:2px}
+.rank .cols,.rank button{display:grid;grid-template-columns:minmax(0,1fr) 5.5rem 3.2rem 4.6rem;gap:10px;align-items:center}
+.rank .cols{font-family:var(--display);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:0 0 4px;border-bottom:1px solid var(--line)}
+.rank .cols span:not(:first-child){text-align:right}
+.rank button{width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:6px 0;color:var(--fg);font:inherit;font-size:.9rem;text-align:left;cursor:pointer}
+.rank button:hover .nm,.rank button[aria-pressed="true"] .nm{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.rank .nm{min-width:0;overflow-wrap:anywhere}
+.rank .cnt{display:flex;align-items:center;gap:6px;justify-content:flex-end;font-family:var(--mono);font-size:.82rem;font-variant-numeric:tabular-nums}
+.rank .bar{flex:1;height:8px;background:var(--accent-soft);border-radius:2px;overflow:hidden;max-width:3rem}
+.rank .bar i{display:block;height:100%;background:var(--accent)}
+.rank .ez{font-family:var(--mono);font-size:.82rem;text-align:right;color:var(--ok);font-variant-numeric:tabular-nums}
+.rank .lvc{text-align:right}
+@media (max-width:480px){.rank .cols,.rank button{grid-template-columns:minmax(0,1fr) 4.2rem 2.6rem 4.4rem;gap:6px}.rank .bar{display:none}}
+.stats{display:flex;flex-wrap:wrap;gap:6px 18px;font-family:var(--mono);font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.stats b{color:var(--fg);font-weight:500}
+.bar2{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);margin:1.4rem -16px 1.4rem;padding:10px 16px;display:grid;gap:8px}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.lbl{font-family:var(--display);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);min-width:3.6rem}
+.chip{font-family:var(--mono);font-size:.78rem;border:1px solid var(--line);background:var(--paper);color:var(--fg);border-radius:999px;padding:3px 10px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+select{font-family:var(--body);font-size:.88rem;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--fg);max-width:100%}
+.link{background:none;border:0;color:var(--accent);font-family:var(--display);font-size:.85rem;cursor:pointer;padding:4px 2px;text-decoration:underline;text-underline-offset:3px}
+.list{display:grid;gap:20px}
+.q{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:18px 18px 16px;min-width:0}
+.qh{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;margin-bottom:12px;font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+.qh .num{font-family:var(--display);font-weight:700;font-size:1.05rem;color:var(--fg)}
+.tag{background:var(--accent-soft);color:var(--accent);padding:1px 8px;border-radius:3px;font-family:var(--display);font-size:.76rem}
+.state{margin-left:auto}
+.txt{overflow-wrap:anywhere}
+.txt p{margin:0 0 .7em}
+.txt .src{font-size:.82rem;color:var(--muted)}
+.txt img{display:block;margin:.6em 0;border-radius:3px;background:#fff}
+.intro{font-weight:600;margin:.4em 0 .8em}
+.scan{display:grid;gap:6px;margin-bottom:12px}
+.scan img{width:100%;border:1px solid var(--line);border-radius:3px;background:#fff}
+.alts{display:grid;gap:8px}
+.alts.letters{grid-template-columns:repeat(5,minmax(0,1fr))}
+.alt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;border:1px solid var(--line);background:transparent;color:var(--fg);font:inherit;padding:9px 12px;border-radius:4px;cursor:pointer}
+.alts.letters .alt{justify-content:center}
+.alt:hover:not(:disabled){border-color:var(--accent)}
+.alt:disabled{cursor:default}
+.alt .L{font-family:var(--mono);font-weight:500;flex:0 0 auto;width:1.6rem;height:1.6rem;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;font-size:.8rem}
+.alt .X{min-width:0;overflow-wrap:anywhere}
+.alt.right{border-color:var(--ok);background:var(--ok-soft)} .alt.right .L{background:var(--ok);border-color:var(--ok);color:var(--paper)}
+.alt.wrong{border-color:var(--bad);background:var(--bad-soft)} .alt.wrong .L{background:var(--bad);border-color:var(--bad);color:var(--paper)}
+.ok{color:var(--ok)} .bad{color:var(--bad)}
+.foot{display:flex;justify-content:flex-end;margin-top:8px}
+.empty{color:var(--muted);text-align:center;padding:32px 0}
+.more{display:block;margin:18px auto 0;font-family:var(--display);font-size:.95rem;border:1px solid var(--accent);color:var(--accent);background:var(--paper);border-radius:999px;padding:8px 18px;cursor:pointer}
+@media (prefers-reduced-motion:no-preference){.alt{transition:border-color .15s,background .15s}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <h1>Banco Enem 2015–2025</h1>
+  <p class="lede">Todas as questões das provas regulares do Enem de 2015 a 2025, caderno azul, separadas por matéria e assunto. Cada questão traz a dificuldade oficial calculada pelo Inep.</p>
+  <div class="tabs" role="tablist" id="tabs"></div>
+
+  <section id="resumo">
+    <div class="box tri">
+      <h2>Por que as fáceis importam mais</h2>
+      <p>A nota do Enem usa a TRI. Ela olha a coerência das respostas: quem erra uma questão fácil e acerta uma difícil parece ter chutado, e a nota cai. Por isso as fáceis são a base. Acertar todas elas rende mais do que acertar algumas difíceis.</p>
+      <p class="note">A dificuldade vem dos microdados do Inep, na escala de notas do Enem. <span class="lv f">Fácil</span> abaixo de 600 pontos, <span class="lv m">Média</span> de 600 a 699, <span class="lv d">Difícil</span> a partir de 700. Uma questão de 550 é acertada, em geral, por quem tira perto de 550.</p>
+    </div>
+    <div class="sumgrid" id="sumgrid"></div>
+  </section>
+
+  <section id="materia" hidden>
+    <div class="stats" id="stats" style="margin-top:1.2rem"></div>
+    <section class="rank" aria-label="Assuntos">
+      <div class="rhead">
+        <h2 id="rtitle">Assuntos</h2>
+        <div class="seg" role="group" aria-label="Ordenar assuntos">
+          <button type="button" data-r="n" aria-pressed="true">Mais caem</button>
+          <button type="button" data-r="f">Mais fáceis</button>
+        </div>
+      </div>
+      <ol id="rank"></ol>
+      <p class="note">Clique em um assunto para ver só as questões dele. "Fáceis" é o número de questões abaixo de 600 pontos. "Nível" é a dificuldade típica (mediana) do assunto.</p>
+    </section>
+
+    <div class="bar2">
+      <div class="row" id="years"><span class="lbl">Ano</span></div>
+      <div class="row">
+        <span class="lbl">Filtros</span>
+        <select id="topic" aria-label="Assunto"></select>
+        <select id="level" aria-label="Dificuldade">
+          <option value="">Toda dificuldade</option>
+          <option value="f">Só fáceis</option>
+          <option value="m">Só médias</option>
+          <option value="d">Só difíceis</option>
+        </select>
+        <select id="mode" aria-label="Mostrar">
+          <option value="all">Todas</option>
+          <option value="todo">Não respondidas</option>
+          <option value="wrong">Que errei</option>
+        </select>
+        <select id="order" aria-label="Ordem">
+          <option value="easy">Mais fáceis primeiro</option>
+          <option value="exam">Ordem da prova</option>
+          <option value="rand">Embaralhadas</option>
+        </select>
+        <button class="link" id="reset" type="button">Zerar respostas</button>
+      </div>
+    </div>
+    <div class="list" id="list"></div>
+    <button class="more" id="more" type="button" hidden>Mostrar mais</button>
+    <p class="note" style="margin-top:2rem">Enunciados e gabaritos oficiais do Inep. Questões anuladas ficaram de fora. Em 2020 a 2023 o texto vem de uma transcrição das provas do Inep. Nos outros anos, as questões com figura, tabela ou fórmula aparecem como imagem da prova. A divisão por assunto foi feita à mão e pode ter questões que se encaixam em mais de um.</p>
+  </section>
+</div>
+
+<script type="application/json" id="resumo-data">{"stats": {"geografia": {"n": 164, "easy": 74, "med": 604, "topics": [{"t": "Questões ambientais", "n": 24, "easy": 13, "mid": 10, "hard": 1, "med": 580}, {"t": "Espaço agrário", "n": 22, "easy": 8, "mid": 11, "hard": 2, "med": 618}, {"t": "Globalização e geopolítica", "n": 28, "easy": 12, "mid": 14, "hard": 2, "med": 604}, {"t": "Urbanização", "n": 21, "easy": 14, "mid": 6, "hard": 1, "med": 578}, {"t": "Cartografia", "n": 11, "easy": 5, "mid": 5, "hard": 1, "med": 611}, {"t": "Relevo, clima, solos e água", "n": 32, "easy": 10, "mid": 18, "hard": 3, "med": 631}, {"t": "Indústria, energia e transportes", "n": 13, "easy": 4, "mid": 8, "hard": 1, "med": 622}, {"t": "População e migrações", "n": 13, "easy": 8, "mid": 3, "hard": 2, "med": 587}]}, "filosofia": {"n": 162, "easy": 75, "med": 606, "topics": [{"t": "Sociologia: cultura e sociedade", "n": 56, "easy": 38, "mid": 14, "hard": 4, "med": 564}, {"t": "Filosofia contemporânea e ética", "n": 40, "easy": 9, "mid": 23, "hard": 6, "med": 648}, {"t": "Filosofia antiga", "n": 18, "easy": 6, "mid": 9, "hard": 3, "med": 649}, {"t": "Filosofia moderna", "n": 22, "easy": 6, "mid": 10, "hard": 6, "med": 645}, {"t": "Filosofia medieval", "n": 5, "easy": 0, "mid": 4, "hard": 1, "med": 635}, {"t": "Política, cidadania e direitos", "n": 21, "easy": 16, "mid": 4, "hard": 1, "med": 576}]}, "historia": {"n": 169, "easy": 72, "med": 611, "topics": [{"t": "Antiguidade e Idade Média", "n": 24, "easy": 7, "mid": 15, "hard": 2, "med": 617}, {"t": "Brasil Colônia", "n": 15, "easy": 5, "mid": 10, "hard": 0, "med": 611}, {"t": "África, escravidão e resistência", "n": 11, "easy": 7, "mid": 4, "hard": 0, "med": 584}, {"t": "Primeira República e Era Vargas", "n": 30, "easy": 13, "mid": 14, "hard": 3, "med": 624}, {"t": "República de 1946, ditadura e Nova República", "n": 17, "easy": 5, "mid": 8, "hard": 4, "med": 633}, {"t": "Brasil Império", "n": 16, "easy": 6, "mid": 7, "hard": 3, "med": 622}, {"t": "Mundo contemporâneo", "n": 16, "easy": 6, "mid": 9, "hard": 1, "med": 624}, {"t": "Cultura, memória e patrimônio", "n": 16, "easy": 10, "mid": 5, "hard": 1, "med": 593}, {"t": "Idade Moderna e revoluções", "n": 24, "easy": 13, "mid": 9, "hard": 2, "med": 596}]}, "biologia": {"n": 166, "easy": 63, "med": 619, "topics": [{"t": "Fisiologia humana", "n": 26, "easy": 14, "mid": 9, "hard": 3, "med": 599}, {"t": "Ecologia e meio ambiente", "n": 34, "easy": 16, "mid": 15, "hard": 3, "med": 607}, {"t": "Citologia", "n": 9, "easy": 3, "mid": 5, "hard": 1, "med": 644}, {"t": "Genética", "n": 14, "easy": 5, "mid": 7, "hard": 2, "med": 624}, {"t": "Evolução e classificação", "n": 10, "easy": 4, "mid": 5, "hard": 1, "med": 625}, {"t": "Bioquímica e metabolismo", "n": 10, "easy": 1, "mid": 7, "hard": 2, "med": 660}, {"t": "Saúde, vírus e parasitas", "n": 22, "easy": 10, "mid": 8, "hard": 3, "med": 611}, {"t": "Biotecnologia", "n": 14, "easy": 5, "mid": 6, "hard": 3, "med": 657}, {"t": "Zoologia", "n": 11, "easy": 4, "mid": 6, "hard": 1, "med": 604}, {"t": "Botânica", "n": 16, "easy": 1, "mid": 13, "hard": 2, "med": 649}]}, "fisica": {"n": 163, "easy": 32, "med": 662, "topics": [{"t": "Energia e usinas", "n": 4, "easy": 0, "mid": 3, "hard": 1, "med": 688}, {"t": "Ondulatória e som", "n": 24, "easy": 5, "mid": 10, "hard": 8, "med": 662}, {"t": "Óptica", "n": 12, "easy": 1, "mid": 7, "hard": 4, "med": 667}, {"t": "Termologia", "n": 25, "easy": 6, "mid": 16, "hard": 3, "med": 658}, {"t": "Mecânica", "n": 39, "easy": 6, "mid": 22, "hard": 10, "med": 678}, {"t": "Eletricidade", "n": 33, "easy": 6, "mid": 17, "hard": 9, "med": 650}, {"t": "Física moderna e nuclear", "n": 5, "easy": 2, "mid": 3, "hard": 0, "med": 635}, {"t": "Eletromagnetismo", "n": 11, "easy": 1, "mid": 9, "hard": 1, "med": 650}, {"t": "Hidrostática", "n": 7, "easy": 3, "mid": 4, "hard": 0, "med": 636}, {"t": "Gravitação e astronomia", "n": 3, "easy": 2, "mid": 1, "hard": 0, "med": 597}]}, "quimica": {"n": 162, "easy": 31, "med": 653, "topics": [{"t": "Separação de misturas", "n": 13, "easy": 4, "mid": 6, "hard": 3, "med": 651}, {"t": "Ligações e propriedades da matéria", "n": 13, "easy": 5, "mid": 5, "hard": 3, "med": 628}, {"t": "Soluções", "n": 7, "easy": 0, "mid": 5, "hard": 2, "med": 689}, {"t": "Eletroquímica e oxirredução", "n": 15, "easy": 2, "mid": 10, "hard": 2, "med": 657}, {"t": "Química orgânica", "n": 41, "easy": 6, "mid": 23, "hard": 11, "med": 656}, {"t": "Reações inorgânicas e ácido-base", "n": 18, "easy": 0, "mid": 14, "hard": 4, "med": 666}, {"t": "Termoquímica, cinética e equilíbrio", "n": 14, "easy": 2, "mid": 8, "hard": 4, "med": 659}, {"t": "Estequiometria e gases", "n": 15, "easy": 1, "mid": 10, "hard": 3, "med": 661}, {"t": "Química ambiental", "n": 16, "easy": 11, "mid": 4, "hard": 1, "med": 580}, {"t": "Atomística e radioatividade", "n": 10, "easy": 0, "mid": 8, "hard": 2, "med": 667}]}, "linguagens": {"n": 550, "easy": 347, "med": 578, "topics": [{"t": "Espanhol", "n": 55, "easy": 38, "mid": 17, "hard": 0, "med": 579}, {"t": "Inglês", "n": 55, "easy": 49, "mid": 5, "hard": 1, "med": 561}, {"t": "Interpretação e gêneros textuais", "n": 91, "easy": 60, "mid": 24, "hard": 7, "med": 570}, {"t": "Artes", "n": 63, "easy": 30, "mid": 24, "hard": 9, "med": 601}, {"t": "Literatura", "n": 126, "easy": 58, "mid": 41, "hard": 23, "med": 607}, {"t": "Gramática e recursos expressivos", "n": 30, "easy": 17, "mid": 9, "hard": 4, "med": 594}, {"t": "Tecnologias da comunicação", "n": 37, "easy": 28, "mid": 9, "hard": 0, "med": 545}, {"t": "Variação linguística", "n": 48, "easy": 31, "mid": 15, "hard": 2, "med": 574}, {"t": "Educação física e corpo", "n": 45, "easy": 36, "mid": 7, "hard": 1, "med": 531}]}, "matematica": {"n": 489, "easy": 63, "med": 696, "topics": [{"t": "Aritmética e álgebra", "n": 86, "easy": 18, "mid": 38, "hard": 30, "med": 662}, {"t": "Geometria plana", "n": 51, "easy": 2, "mid": 17, "hard": 32, "med": 724}, {"t": "Funções e gráficos", "n": 74, "easy": 9, "mid": 30, "hard": 34, "med": 689}, {"t": "Estatística", "n": 61, "easy": 12, "mid": 28, "hard": 21, "med": 687}, {"t": "Geometria espacial", "n": 58, "easy": 6, "mid": 18, "hard": 34, "med": 704}, {"t": "Probabilidade", "n": 25, "easy": 2, "mid": 7, "hard": 15, "med": 769}, {"t": "Porcentagem e juros", "n": 30, "easy": 2, "mid": 12, "hard": 15, "med": 707}, {"t": "Razão, proporção e escala", "n": 76, "easy": 10, "mid": 31, "hard": 34, "med": 690}, {"t": "Análise combinatória", "n": 21, "easy": 0, "mid": 5, "hard": 16, "med": 742}, {"t": "Geometria analítica", "n": 7, "easy": 2, "mid": 1, "hard": 4, "med": 743}]}}, "files": {"geografia": ["geografia-2015.json", "geografia-2016.json", "geografia-2017.json", "geografia-2018.json", "geografia-2019.json", "geografia-2020.json", "geografia-2021.json", "geografia-2022.json", "geografia-2023.json", "geografia-2024.json", "geografia-2025.json"], "filosofia": ["filosofia-2015.json", "filosofia-2016.json", "filosofia-2017.json", "filosofia-2018.json", "filosofia-2019.json", "filosofia-2020.json", "filosofia-2021.json", "filosofia-2022.json", "filosofia-2023.json", "filosofia-2024.json", "filosofia-2025.json"], "historia": ["historia-2015.json", "historia-2016.json", "historia-2017.json", "historia-2018.json", "historia-2019.json", "historia-2020.json", "historia-2021.json", "historia-2022.json", "historia-2023.json", "historia-2024.json", "historia-2025.json"], "biologia": ["biologia-2015.json", "biologia-2016.json", "biologia-2017.json", "biologia-2018.json", "biologia-2019.json", "biologia-2020.json", "biologia-2021.json", "biologia-2022.json", "biologia-2023.json", "biologia-2024.json", "biologia-2025.json"], "fisica": ["fisica-2015.json", "fisica-2016.json", "fisica-2017.json", "fisica-2018.json", "fisica-2019.json", "fisica-2020.json", "fisica-2021.json", "fisica-2022.json", "fisica-2023.json", "fisica-2024.json", "fisica-2025.json"], "quimica": ["quimica-2015.json", "quimica-2016.json", "quimica-2017.json", "quimica-2018.json", "quimica-2019.json", "quimica-2020.json", "quimica-2021.json", "quimica-2022.json", "quimica-2023.json", "quimica-2024.json", "quimica-2025.json"], "linguagens": ["linguagens-2015.json", "linguagens-2016.json", "linguagens-2017.json", "linguagens-2018.json", "linguagens-2019.json", "linguagens-2020.json", "linguagens-2021.json", "linguagens-2022.json", "linguagens-2023.json", "linguagens-2024.json", "linguagens-2025.json"], "matematica": ["matematica-2015.json", "matematica-2016.json", "matematica-2017.json", "matematica-2018.json", "matematica-2019.json", "matematica-2020.json", "matematica-2021.json", "matematica-2022.json", "matematica-2023.json", "matematica-2024.json", "matematica-2025.json"]}}</script>
+<script>
+const R=JSON.parse(document.getElementById('resumo-data').textContent);
+const SUBJ=[['biologia','Biologia'],['fisica','Física'],['quimica','Química'],['matematica','Matemática'],['linguagens','Linguagens'],['historia','História'],['geografia','Geografia'],['filosofia','Filosofia e Sociologia']];
+const NAME=Object.fromEntries(SUBJ);
+const PAGE=25;
+let cur=null,Q=[],cache={},selYears=new Set(),rankBy='n',shown=PAGE,order=null,resetArmed=false;
+let ans={};try{ans=JSON.parse(localStorage.getItem('enem-banco-ans')||'{}')}catch(e){}
+try{for(const k of ['nat-enem-ans']){const old=JSON.parse(localStorage.getItem(k)||'{}');for(const kk in old)if(!ans[kk])ans[kk]=old[kk]}}catch(e){}
+const save=()=>{try{localStorage.setItem('enem-banco-ans',JSON.stringify(ans))}catch(e){}};
+const key=q=>cur+'-'+q.y+'-'+q.n+(q.l?'-'+q.l:'');
+const lvl=d=>d==null?'x':d<600?'f':d<700?'m':'d';
+const LVN={f:'Fácil',m:'Média',d:'Difícil',x:'Sem dado'};
+const chip=d=>'<span class="lv '+lvl(d)+'">'+LVN[lvl(d)]+(d!=null?' · '+d:'')+'</span>';
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function md(s){
+  if(!s)return'';
+  const imgs=[];
+  s=s.replace(/!\[[^\]]*\]\(([^)\s]+)\)/g,(m,u)=>{imgs.push(u);return'\u0000'+(imgs.length-1)+'\u0000'});
+  let h=esc(s).replace(/\\([\[\]\-*_.()])/g,'$1').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/(^|[\s(])_(.+?)_(?=[\s.,;:)]|$)/g,'$1<em>$2</em>');
+  h=h.replace(/\u0000(\d+)\u0000/g,(m,i)=>'<img alt="Figura da questão" loading="lazy" src="'+imgs[i]+'">');
+  return h.split(/\n\s*\n/).map(p=>{const t=p.trim();if(!t)return'';
+    const cls=/^(Disponível em|[A-ZÁÉÍÓÚ]{2,}[A-ZÁÉÍÓÚ ,.]*\s[A-Z]\.|Acesso em)/.test(t)?' class="src"':'';
+    return'<p'+cls+'>'+t.replace(/\n/g,'<br>')+'</p>'}).join('');
+}
+
+/* abas */
+const tabs=document.getElementById('tabs');
+[['resumo','Resumo']].concat(SUBJ).forEach(([s,n])=>{const b=document.createElement('button');b.className='tab';b.type='button';b.role='tab';b.textContent=n;b.dataset.s=s;b.onclick=()=>go(s);tabs.append(b)});
+
+/* resumo */
+function byEasy(ts){return ts.slice().sort((a,b)=>(a.med??999)-(b.med??999)||b.n-a.n)}
+function byN(ts){return ts.slice().sort((a,b)=>b.n-a.n||a.t.localeCompare(b.t,'pt'))}
+function drawSummary(){
+  const g=document.getElementById('sumgrid');g.innerHTML='';
+  SUBJ.forEach(([s,n])=>{const st=R.stats[s];if(!st)return;
+    const top=byN(st.topics).slice(0,3);
+    const must=st.topics.slice().sort((a,b)=>b.easy-a.easy||(a.med??999)-(b.med??999)).slice(0,3);
+    const easiest=byEasy(st.topics.filter(t=>t.n>=5))[0];
+    const el=document.createElement('article');el.className='box sum';
+    el.innerHTML='<div class="head"><h3>'+n+'</h3><span class="meta">'+st.n+' questões · '+st.easy+' fáceis</span></div>'+
+      '<dl><div><dt>O que mais cai</dt><dd>'+top.map(t=>t.t+' ('+t.n+')').join(', ')+'</dd></div>'+
+      '<div><dt>Não pode errar</dt><dd>'+must.map(t=>t.t+' ('+t.easy+' fáceis)').join(', ')+'</dd></div>'+
+      (easiest?'<div><dt>Assunto mais fácil</dt><dd>'+easiest.t+' '+chip(easiest.med)+'</dd></div>':'')+'</dl>';
+    const b=document.createElement('button');b.className='link go';b.type='button';b.textContent='Ver questões de '+n;b.onclick=()=>go(s);el.append(b);
+    g.append(el)});
+}
+
+/* matéria */
+const yb=document.getElementById('years'),ts=document.getElementById('topic'),L=document.getElementById('list'),more=document.getElementById('more');
+const allY=document.createElement('button');allY.className='chip';allY.type='button';allY.textContent='Todos';allY.onclick=()=>{selYears.clear();render()};yb.append(allY);
+for(let y=2015;y<=2025;y++){const b=document.createElement('button');b.className='chip';b.type='button';b.textContent=y;b.dataset.y=y;b.onclick=()=>{selYears.has(y)?selYears.delete(y):selYears.add(y);render()};yb.append(b)}
+['topic','level','mode'].forEach(id=>document.getElementById(id).onchange=()=>{render();drawRank()});
+document.getElementById('order').onchange=e=>{order=e.target.value==='rand'?new Map(Q.map(q=>[key(q),Math.random()])):null;render()};
+document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{rankBy=b.dataset.r;document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));drawRank()});
+more.onclick=()=>{shown+=PAGE;render(true)};
+const rb=document.getElementById('reset');
+rb.onclick=()=>{if(!resetArmed){resetArmed=true;rb.textContent='Confirmar: apagar respostas de '+NAME[cur];setTimeout(()=>{resetArmed=false;rb.textContent='Zerar respostas'},4000);return}
+  for(const k in ans)if(k.startsWith(cur+'-'))delete ans[k];save();resetArmed=false;rb.textContent='Zerar respostas';render()};
+
+function drawRank(){
+  const st=R.stats[cur],ol=document.getElementById('rank');
+  const tsr=rankBy==='n'?byN(st.topics):byEasy(st.topics);const max=Math.max(...st.topics.map(t=>t.n));
+  ol.innerHTML='<li class="cols" aria-hidden="true"><span>Assunto</span><span>Questões</span><span>Fáceis</span><span>Nível</span></li>';
+  tsr.forEach(t=>{const li=document.createElement('li'),b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',ts.value===t.t);
+    b.innerHTML='<span class="nm">'+t.t+'</span><span class="cnt"><span class="bar"><i style="width:'+(t.n/max*100)+'%"></i></span>'+t.n+'</span><span class="ez">'+t.easy+'</span><span class="lvc">'+chip(t.med)+'</span>';
+    b.onclick=()=>{ts.value=ts.value===t.t?'':t.t;shown=PAGE;render();drawRank();document.querySelector('.bar2').scrollIntoView({behavior:'smooth',block:'start'})};
+    li.append(b);ol.append(li)});
+}
+function stats(){
+  const st=R.stats[cur],done=Q.filter(q=>ans[key(q)]).length,right=Q.filter(q=>ans[key(q)]===q.g).length;
+  const loaded=Q.length<st.n?' (carregando '+Q.length+' de '+st.n+')':'';
+  document.getElementById('stats').innerHTML='<span><b>'+st.n+'</b> questões de '+NAME[cur]+loaded+'</span><span><b>'+st.easy+'</b> fáceis</span><span><b>'+done+'</b> respondidas</span><span><b>'+right+'</b> acertos'+(done?' ('+Math.round(right/done*100)+'%)':'')+'</span>';
+}
+function card(q){
+  const k=key(q),a=ans[k],el=document.createElement('article');el.className='q';
+  const st=a?(a===q.g?'<span class="state ok">acertou</span>':'<span class="state bad">errou · gabarito '+q.g+'</span>'):'';
+  const lang=q.l?' · '+(q.l==='ing'?'Inglês':'Espanhol'):'';
+  const head='<div class="qh"><span class="num">Questão '+q.n+'</span><span>Enem '+q.y+lang+'</span><span class="tag">'+q.t+'</span>'+chip(q.d)+st+'</div>'+
+    (q.sh?'<div class="scan">'+q.sh.map(u=>'<img alt="Texto de apoio da prova" loading="lazy" src="'+u+'">').join('')+'</div>':'');
+  if(q.img){el.innerHTML=head+'<div class="scan">'+q.f.map(u=>'<img alt="Questão '+q.n+' do Enem '+q.y+', imagem da prova" loading="lazy" src="'+u+'">').join('')+'</div><div class="alts letters"></div>'}
+  else{const figs=(q.f||[]).map(u=>'<img alt="Figura da questão" loading="lazy" src="'+u+'">').join('');
+    el.innerHTML=head+'<div class="txt">'+md(q.c)+figs+'</div><div class="txt intro">'+md(q.i)+'</div><div class="alts"></div>'}
+  const box=el.querySelector('.alts');
+  q.a.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='alt';
+    b.innerHTML='<span class="L">'+o.l+'</span>'+(q.img?'':'<span class="X">'+(o.f?'<img alt="Alternativa '+o.l+'" loading="lazy" src="'+o.f+'">':'')+md(o.x).replace(/^<p>|<\/p>$/g,'')+'</span>');
+    if(q.img)b.setAttribute('aria-label','Alternativa '+o.l);
+    if(a){b.disabled=true;if(o.l===q.g)b.classList.add('right');else if(o.l===a)b.classList.add('wrong')}
+    b.onclick=()=>{ans[k]=o.l;save();el.replaceWith(card(q));stats()};box.append(b)});
+  if(a){const f=document.createElement('div');f.className='foot';const r=document.createElement('button');r.className='link';r.type='button';r.textContent='Refazer esta questão';
+    r.onclick=()=>{delete ans[k];save();el.replaceWith(card(q));stats()};f.append(r);el.append(f)}
+  return el;
+}
+function filtered(){
+  const t=ts.value,lv=document.getElementById('level').value,m=document.getElementById('mode').value,o=document.getElementById('order').value;
+  let l=Q.filter(q=>(!selYears.size||selYears.has(q.y))&&(!t||q.t===t)&&(!lv||lvl(q.d)===lv)&&(m==='all'||(m==='todo'&&!ans[key(q)])||(m==='wrong'&&ans[key(q)]&&ans[key(q)]!==q.g)));
+  if(o==='easy')l.sort((a,b)=>(a.d??9999)-(b.d??9999));
+  else if(o==='exam')l.sort((a,b)=>a.y-b.y||a.n-b.n);
+  else if(order)l.sort((a,b)=>(order.get(key(a))??1)-(order.get(key(b))??1));
+  return l;
+}
+function render(append){
+  try{localStorage.setItem('enem-banco-ui',JSON.stringify({s:cur,y:[...selYears]}))}catch(e){}
+  allY.setAttribute('aria-pressed',selYears.size===0);
+  yb.querySelectorAll('[data-y]').forEach(b=>b.setAttribute('aria-pressed',selYears.has(+b.dataset.y)));
+  if(!append)shown=PAGE;
+  const l=filtered();L.innerHTML='';
+  if(!l.length)L.innerHTML='<p class="empty">'+(Q.length?'Nenhuma questão com esses filtros.':'Carregando questões…')+'</p>';
+  l.slice(0,shown).forEach(q=>L.append(card(q)));
+  more.hidden=l.length<=shown;more.textContent='Mostrar mais ('+(l.length-shown)+' restantes)';
+  stats();
+}
+async function loadSubject(s){
+  if(cache[s]){Q=cache[s];return}
+  Q=[];const files=R.files[s];let pending=files.length;
+  await Promise.all(files.map(async f=>{try{const d=await (await fetch('dados/'+f)).json();if(cur===s){Q=Q.concat(d);render(true)}}catch(e){}
+    if(--pending===0&&cur===s)cache[s]=Q}));
+  if(cur===s&&Q.length<R.stats[s].n)L.insertAdjacentHTML('afterbegin','<p class="empty">Parte das questões não carregou. Recarregue a página.</p>');
+}
+function go(s){
+  document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.s===s));
+  const isR=s==='resumo';document.getElementById('resumo').hidden=!isR;document.getElementById('materia').hidden=isR;
+  try{localStorage.setItem('enem-banco-ui',JSON.stringify({s,y:[...selYears]}))}catch(e){}
+  if(isR){cur=null;return}
+  cur=s;shown=PAGE;order=null;document.getElementById('order').value='easy';
+  document.getElementById('rtitle').textContent='Assuntos de '+NAME[s];
+  const tc=byN(R.stats[s].topics);
+  ts.innerHTML='<option value="">Todos os assuntos</option>'+tc.map(t=>'<option value="'+t.t+'">'+t.t+' ('+t.n+')</option>').join('');
+  drawRank();Q=cache[s]||[];render(false);loadSubject(s);
+}
+drawSummary();
+let ui={};try{ui=JSON.parse(localStorage.getItem('enem-banco-ui')||'{}')}catch(e){}
+if(ui.y)selYears=new Set(ui.y);
+go(NAME[ui.s]?ui.s:'resumo');
+</script>
+
+</body>
+</html>
