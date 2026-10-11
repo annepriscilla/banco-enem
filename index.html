@@ -4,7 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Questões do Enem 2015 a 2025 por matéria e assunto, com a dificuldade oficial do Inep.">
-<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}*,*::before,*::after{box-sizing:border-box}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%;height:auto}[hidden]{display:none!important}</style>
+<meta name="theme-color" content="#1f6f5c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Banco Enem">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icones/favicon-32.png">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}*,*::before,*::after{box-sizing:border-box}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%;height:auto}[hidden]{display:none!important}
+.install{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:1rem;padding:10px 14px;border:1px solid var(--accent);border-radius:6px;background:var(--accent-soft);font-size:.9rem}
+.install b{font-family:var(--display)}
+.install button{font-family:var(--display);font-size:.9rem;border:0;border-radius:999px;background:var(--accent);color:var(--paper);padding:6px 14px;cursor:pointer}
+.install .x{background:none;color:var(--muted);padding:2px 6px;margin-left:auto}
+</style>
 <title>Banco Enem 2015–2025</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Literata:opsz,wght@7..72,400;7..72,600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -111,6 +124,12 @@ select{font-family:var(--body);font-size:.88rem;padding:4px 6px;border:1px solid
 <div class="wrap">
   <h1>Banco Enem 2015–2025</h1>
   <p class="lede">Todas as questões das provas regulares do Enem de 2015 a 2025, caderno azul, separadas por matéria e assunto. Cada questão traz a dificuldade oficial calculada pelo Inep.</p>
+  
+<div class="install" id="install" hidden>
+  <span id="install-msg"><b>Use como app.</b> Instale o Banco Enem no celular ou no computador para abrir direto, até sem internet.</span>
+  <button type="button" id="install-btn" hidden>Instalar app</button>
+  <button type="button" class="x" id="install-x" aria-label="Fechar aviso">Fechar</button>
+</div>
   <div class="tabs" role="tablist" id="tabs"></div>
 
   <section id="resumo">
@@ -302,5 +321,21 @@ if(ui.y)selYears=new Set(ui.y);
 go(NAME[ui.s]?ui.s:'resumo');
 </script>
 
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+(function(){
+  const box=document.getElementById('install'),btn=document.getElementById('install-btn'),msg=document.getElementById('install-msg');
+  const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+  let closed=false;try{closed=localStorage.getItem('enem-install-x')==='1'}catch(e){}
+  if(standalone||closed)return;
+  let ev=null;
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();ev=e;btn.hidden=false;box.hidden=false});
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  if(ios){msg.innerHTML='<b>Use como app.</b> No Safari, toque em Compartilhar e depois em <b>Adicionar à Tela de Início</b>.';box.hidden=false}
+  btn.onclick=async()=>{if(!ev)return;ev.prompt();await ev.userChoice;ev=null;box.hidden=true};
+  document.getElementById('install-x').onclick=()=>{box.hidden=true;try{localStorage.setItem('enem-install-x','1')}catch(e){}};
+  window.addEventListener('appinstalled',()=>{box.hidden=true});
+})();
+</script>
 </body>
 </html>

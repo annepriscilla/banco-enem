@@ -11,6 +11,14 @@ Abra o site: https://annepriscilla.github.io/banco-enem/
 - Dificuldade oficial de cada questão, calculada pelo Inep com a TRI e publicada nos microdados do Enem. Fácil fica abaixo de 600 pontos, média de 600 a 699 e difícil a partir de 700.
 - As questões aparecem das mais fáceis para as mais difíceis. Você responde e vê o gabarito na hora. Suas respostas ficam salvas só no seu navegador.
 
+## Instalar como app
+
+- **Android (Chrome):** abra o site e toque em **Instalar app** no aviso do topo, ou no menu ⋮ → **Instalar app**.
+- **iPhone (Safari):** toque em Compartilhar → **Adicionar à Tela de Início**.
+- **Computador (Chrome ou Edge):** clique no ícone de instalar na barra de endereço.
+
+Depois de instalado, o app abre direto, com ícone próprio. As questões que você já abriu continuam disponíveis sem internet.
+
 ## De onde vêm os dados
 
 - Provas e gabaritos: site do Inep (Provas e Gabaritos).
