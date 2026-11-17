@@ -1,5 +1,5 @@
 // Guarda a página e as questões já abertas para funcionar sem internet.
-const VERSAO = 'banco-enem-v3';
+const VERSAO = 'banco-enem-v4';
 const BASE = ['./', 'index.html', 'manifest.webmanifest', 'icones/icone-192.png', 'icones/icone-512.png'];
 
 self.addEventListener('install', e => {
